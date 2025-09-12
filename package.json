@@ -1,0 +1,43 @@
+{
+  "name": "travel-api",
+  "main": "app.ts",
+  "version": "1.0.0",
+  "author": "Yasin Abbasi",
+  "description": "A Platform for Sharing Travel Experiences.",
+  "keywords": [
+    "Travel API",
+    "Node.js",
+    "Express.js",
+    "Drizzle",
+    "Typescript"
+  ],
+  "license": "ISC",
+  "scripts": {
+    "start": "bun dist/app.js",
+    "start:node": "node dist/app.js",
+    "dev:hot": "bun --hot src/app.ts",
+    "dev:watch": "bun --watch src/app.ts",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.21",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^24.3.1",
+    "drizzle-kit": "^0.31.4",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "drizzle-orm": "^0.44.5",
+    "express": "^5.1.0",
+    "multer": "^2.0.2",
+    "mysql2": "^3.14.5",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.17.0",
+    "zod": "^4.1.8"
+  }
+}
