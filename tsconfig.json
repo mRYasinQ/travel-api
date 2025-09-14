@@ -4,6 +4,7 @@
     "outDir": "./dist",
     "target": "es2022",
     "module": "commonjs",
+    "typeRoots": ["./src/types", "./node_modules/@types"],
     "lib": ["esnext"],
     "strict": true,
     "esModuleInterop": true,
