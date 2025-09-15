@@ -1,8 +1,8 @@
 import express from 'express';
 
+import { connectToDb } from './configs/db.config';
 import logger from './configs/logger.config';
 import { connectToRedis } from './configs/redis.config';
-import { connectToDb } from './configs/db.config';
 
 const app = express();
 
