@@ -4,23 +4,22 @@ import { connectToDb } from './configs/db.config';
 import logger from './configs/logger.config';
 import { connectToRedis } from './configs/redis.config';
 
+import { notFoundErrorHandler } from './modules/exception/exception.middleware';
+
 const app = express();
 
 const { APP_PORT, BASE_URL } = process.env;
 
 const main = async () => {
-  try {
-    await connectToRedis();
-    await connectToDb();
-  } catch (error) {
-    if (error instanceof Error) {
-      logger.error(error.message);
-    } else {
-      logger.error(JSON.stringify(error));
-    }
-  } finally {
-    app.listen(APP_PORT, () => logger.info(`Server run on port ${APP_PORT}: ${BASE_URL}.`));
-  }
+  await connectToDb();
+  await connectToRedis();
+
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+
+  app.use(notFoundErrorHandler);
+
+  app.listen(APP_PORT, () => logger.info(`Server run on port ${APP_PORT}: ${BASE_URL}.`));
 };
 
 main();
