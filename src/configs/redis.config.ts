@@ -1,5 +1,7 @@
 import { createClient } from 'redis';
 
+import getErrorMessage from '../common/utils/getErrorMessage';
+
 import logger from './logger.config';
 
 const REDIS_URL = process.env.REDIS_URL;
@@ -12,7 +14,7 @@ const connectToRedis = async () => {
 
     logger.info('Server connected to Redis.');
   } catch (error) {
-    throw error;
+    logger.error(`Server cannot connect to Redis, Error: ${getErrorMessage(error)}`);
   }
 };
 

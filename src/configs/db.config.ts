@@ -1,6 +1,8 @@
 import { drizzle } from 'drizzle-orm/mysql2';
 import mysql from 'mysql2/promise';
 
+import getErrorMessage from '../common/utils/getErrorMessage';
+
 import logger from './logger.config';
 
 const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, DB_CONNECTION_LIMIT } = process.env;
@@ -22,7 +24,7 @@ const connectToDb = async () => {
 
     logger.info('Server connected to MySQL.');
   } catch (error) {
-    throw error;
+    logger.error(`Server cannot connect to MySQL, Error: ${getErrorMessage(error)}`);
   }
 };
 
