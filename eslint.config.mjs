@@ -29,23 +29,33 @@ const eslintConfig = defineConfig([
           groups: ['builtin', 'external', 'internal', ['parent', 'sibling', 'index']],
           pathGroups: [
             {
-              pattern: './configs/**',
+              pattern: '{./configs/**,../configs/**}',
               group: 'internal',
               position: 'before',
             },
             {
-              pattern: './middlewares/**',
+              pattern: '{./middlewares/**,../middlewares/**}',
               group: 'internal',
               position: 'after',
             },
             {
-              pattern: './modules/**',
+              pattern: '{./modules/**,../modules/**}',
               group: 'internal',
               position: 'after',
             },
             {
-              pattern: './common/**',
+              pattern: '{./common/**,../common/**}',
               group: 'internal',
+              position: 'after',
+            },
+            {
+              pattern: '../**',
+              group: 'parent',
+              position: 'after',
+            },
+            {
+              pattern: './**',
+              group: 'sibling',
               position: 'after',
             },
           ],

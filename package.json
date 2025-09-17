@@ -15,7 +15,6 @@
   "scripts": {
     "prepare": "husky install",
     "start": "bun dist/app.js",
-    "start:node": "node dist/app.js",
     "dev:hot": "bun --hot src/app.ts",
     "dev:watch": "bun --watch src/app.ts",
     "build": "tsc"
