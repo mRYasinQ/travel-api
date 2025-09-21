@@ -6,6 +6,8 @@ import { connectToRedis } from './configs/redis.config';
 
 import { notFoundErrorHandler } from './modules/exception/exception.middleware';
 
+import appRouter from './app.routes';
+
 const app = express();
 
 const { APP_PORT, BASE_URL } = process.env;
@@ -16,6 +18,8 @@ const main = async () => {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+
+  app.use(appRouter);
 
   app.use(notFoundErrorHandler);
 
