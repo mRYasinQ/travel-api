@@ -18,10 +18,16 @@
     "start": "bun dist/app.js",
     "dev:hot": "bun --hot src/app.ts",
     "dev:watch": "bun --watch src/app.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "db:generate": "bunx drizzle-kit generate",
+    "db:migrate": "bunx drizzle-kit migrate",
+    "db:push": "bunx drizzle-kit push",
+    "db:up": "bunx drizzle-kit up",
+    "db:check": "bunx drizzle-kit check",
+    "db:studio": "bunx drizzle-kit studio"
   },
   "lint-staged": {
-    "*.ts": [
+    "src/**/*.ts": [
       "eslint --fix",
       "prettier --write"
     ]

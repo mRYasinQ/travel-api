@@ -6,7 +6,7 @@ import tsEslint from 'typescript-eslint';
 
 const eslintConfig = defineConfig([
   tsEslint.configs.recommended,
-  globalIgnores(['dist/**/*', 'node_modules/**/*']),
+  globalIgnores(['dist/**/*', 'node_modules/**/*', 'drizzle/**/*']),
   {
     languageOptions: {
       parser: tsEslint.parser,
