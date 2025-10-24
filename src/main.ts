@@ -4,7 +4,7 @@ import { connectToDb } from './configs/db.config';
 import logger from './configs/logger.config';
 import { connectToRedis } from './configs/redis.config';
 
-import { notFoundErrorHandler } from './modules/exception/exception.middleware';
+import { appErrorHandler, notFoundErrorHandler } from './modules/exception/exception.middleware';
 
 import appRouter from './app.routes';
 
@@ -22,6 +22,7 @@ const main = async () => {
   app.use(appRouter);
 
   app.use(notFoundErrorHandler);
+  app.use(appErrorHandler);
 
   app.listen(APP_PORT, () => logger.info(`Server run on port ${APP_PORT}: ${BASE_URL}.`));
 };
