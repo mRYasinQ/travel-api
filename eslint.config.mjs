@@ -2,6 +2,7 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import prettierConfig from 'eslint-config-prettier';
 import importPlugin from 'eslint-plugin-import';
 import prettierPlugin from 'eslint-plugin-prettier';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import tsEslint from 'typescript-eslint';
 
 const eslintConfig = defineConfig([
@@ -15,60 +16,41 @@ const eslintConfig = defineConfig([
       },
     },
     plugins: {
-      import: importPlugin,
       prettier: prettierPlugin,
+      import: importPlugin,
+      'simple-import-sort': simpleImportSort,
       '@typescript-eslint': tsEslint.plugin,
     },
     rules: {
+      'prettier/prettier': 'error',
       'import/first': 'error',
+      'import/exports-last': 'error',
       'import/no-duplicates': 'error',
-      'import/newline-after-import': 'error',
-      'import/order': [
+      'import/order': 'off',
+      'simple-import-sort/imports': [
         'error',
         {
-          groups: ['builtin', 'external', 'internal', ['parent', 'sibling', 'index']],
-          pathGroups: [
-            {
-              pattern: '{./configs/**,../configs/**}',
-              group: 'internal',
-              position: 'before',
-            },
-            {
-              pattern: '{./middlewares/**,../middlewares/**}',
-              group: 'internal',
-              position: 'after',
-            },
-            {
-              pattern: '{./modules/**,../modules/**}',
-              group: 'internal',
-              position: 'after',
-            },
-            {
-              pattern: '{./common/**,../common/**}',
-              group: 'internal',
-              position: 'after',
-            },
-            {
-              pattern: '../**',
-              group: 'parent',
-              position: 'after',
-            },
-            {
-              pattern: './**',
-              group: 'sibling',
-              position: 'after',
-            },
+          groups: [
+            ['^\\u0000'],
+            ['^@?\\w'],
+            ['^(\\.\\.\\/|\\.\\/)*configs\\/'],
+            ['^(\\.\\.\\/|\\.\\/)*common\\/'],
+            ['^(\\.\\.\\/|\\.\\/)*middlewares\\/'],
+            ['^(\\.\\.\\/|\\.\\/)*modules\\/'],
+            ['^(\\.\\.\\/|\\.\\/)*types\\/'],
+            ['^\\.\\.\\/'],
+            ['^\\./'],
           ],
-          pathGroupsExcludedImportTypes: ['builtin'],
-          'newlines-between': 'always',
-          alphabetize: {
-            order: 'asc',
-            caseInsensitive: true,
-          },
         },
       ],
-      'import/exports-last': 'error',
-      'prettier/prettier': 'error',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
     },
   },
   prettierConfig,
