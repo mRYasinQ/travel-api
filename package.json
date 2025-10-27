@@ -1,6 +1,6 @@
 {
   "name": "travel-api",
-  "main": "app.ts",
+  "main": "main.ts",
   "version": "1.0.0",
   "author": "Yasin Abbasi",
   "description": "A Platform for Sharing Travel Experiences.",
@@ -23,8 +23,7 @@
     "db:migrate": "bunx drizzle-kit migrate",
     "db:push": "bunx drizzle-kit push",
     "db:up": "bunx drizzle-kit up",
-    "db:check": "bunx drizzle-kit check",
-    "db:studio": "bunx drizzle-kit studio"
+    "db:check": "bunx drizzle-kit check"
   },
   "lint-staged": {
     "src/**/*.ts": [
