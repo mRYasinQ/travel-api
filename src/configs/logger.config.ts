@@ -1,5 +1,4 @@
 import path from 'path';
-
 import { createLogger, format, transports } from 'winston';
 
 const NODE_ENV = process.env.NODE_ENV;

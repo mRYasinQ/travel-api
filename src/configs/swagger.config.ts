@@ -1,5 +1,4 @@
 import path from 'path';
-
 import swaggerJsDoc, { type OAS3Definition, type Options } from 'swagger-jsdoc';
 
 const BASE_URL = process.env.BASE_URL;
