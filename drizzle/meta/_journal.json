@@ -8,6 +8,13 @@
       "when": 1758574395229,
       "tag": "0000_small_leopardon",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1761605674654,
+      "tag": "0001_chief_rhodey",
+      "breakpoints": true
     }
   ]
 }

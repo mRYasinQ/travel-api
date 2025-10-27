@@ -5,7 +5,7 @@ import sessionEntity from '../session/session.entity';
 
 const userEntity = mysqlTable('user', {
   id: int('id').primaryKey().autoincrement(),
-  firstName: varchar('first_name', { length: 30 }).notNull(),
+  firstName: varchar('first_name', { length: 30 }),
   lastName: varchar('last_name', { length: 30 }),
   email: varchar('email', { length: 255 }).notNull().unique(),
   username: varchar('username', { length: 40 }).notNull().unique(),

@@ -1,0 +1,1 @@
+ALTER TABLE `user` MODIFY COLUMN `first_name` varchar(30);
