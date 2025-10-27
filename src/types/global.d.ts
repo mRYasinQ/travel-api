@@ -1,3 +1,5 @@
+import type { StringValue } from 'ms';
+
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
@@ -14,6 +16,15 @@ declare global {
       DB_PASSWORD: string;
       DB_NAME: string;
       DB_CONNECTION_LIMIT: number;
+
+      MAIL_SECURE: '0' | '1';
+      MAIL_HOST: string;
+      MAIL_PORT: number;
+      MAIL_USER: string;
+      MAIL_PASSWORD: string;
+
+      OTP_EXPIRE: StringValue;
+      OTP_CACHE: StringValue;
     }
   }
 }

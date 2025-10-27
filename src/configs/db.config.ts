@@ -3,6 +3,7 @@ import mysql from 'mysql2/promise';
 
 import getErrorMessage from '../common/utils/getErrorMessage';
 
+import entities from './entities.config';
 import logger from './logger.config';
 
 const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, DB_CONNECTION_LIMIT } = process.env;
@@ -16,7 +17,7 @@ const pool = mysql.createPool({
   connectionLimit: DB_CONNECTION_LIMIT,
 });
 
-const db = drizzle(pool);
+const db = drizzle(pool, { schema: entities, mode: 'default' });
 
 const connectToDb = async () => {
   try {
