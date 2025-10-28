@@ -5,4 +5,4 @@ interface OtpData {
   verified: boolean;
 }
 
-export type { OtpData, RegisterOtpKey };
+export { OtpData, RegisterOtpKey };
