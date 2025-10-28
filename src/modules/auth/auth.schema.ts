@@ -10,6 +10,12 @@ const registerSchema = z.object({
   otp: otpSchema,
 });
 
+const recoverSchema = z.object({
+  email: emailSchema,
+  password: passwordSchema,
+  otp: otpSchema,
+});
+
 const sendOtpSchema = z.object({
   email: emailSchema,
 });
@@ -19,8 +25,9 @@ const verifyOtpSchema = z.object({
   otp: otpSchema,
 });
 
-export { registerSchema, sendOtpSchema, verifyOtpSchema };
+type Register = z.infer<typeof registerSchema>;
+type Recover = z.infer<typeof recoverSchema>;
+type SendOtp = z.infer<typeof sendOtpSchema>;
+type VerifyOtp = z.infer<typeof verifyOtpSchema>;
 
-export type Register = z.infer<typeof registerSchema>;
-export type SendOtp = z.infer<typeof sendOtpSchema>;
-export type VerifyOtp = z.infer<typeof verifyOtpSchema>;
+export { registerSchema, recoverSchema, sendOtpSchema, verifyOtpSchema, Register, Recover, SendOtp, VerifyOtp };
