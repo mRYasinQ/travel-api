@@ -4,8 +4,9 @@ import HttpStatusCode from '../../common/constants/HttpStatusCode';
 import createResponse from '../../common/utils/createResponse';
 
 import AuthMessage from './auth.message';
-import type { Recover, Register, SendOtp, VerifyOtp } from './auth.schema';
+import type { Login, Recover, Register, SendOtp, VerifyOtp } from './auth.schema';
 import {
+  loginUser,
   recoverSendOtp,
   recoverUser,
   recoverVerifyOtp,
@@ -13,6 +14,21 @@ import {
   registerUser,
   registerVerifyOtp,
 } from './auth.service';
+
+const loginHandler: RequestHandler = async (req, res, next) => {
+  try {
+    const { email, password } = req.body as Login;
+
+    const browser = req.userAgent?.browser.name ?? 'unknown';
+    const os = req.userAgent?.os.name ?? 'unknown';
+
+    const token = await loginUser(email, password, browser, os);
+
+    return createResponse(res, HttpStatusCode.OK, AuthMessage.LOGIN_SUCCESS, { email, token });
+  } catch (error) {
+    return next(error);
+  }
+};
 
 const registerHandler: RequestHandler = async (req, res, next) => {
   try {
@@ -87,6 +103,7 @@ const recoverVerifyOtpHandler: RequestHandler = async (req, res, next) => {
 };
 
 export {
+  loginHandler,
   registerHandler,
   registerSendOtpHandler,
   registerVerifyOtpHandler,

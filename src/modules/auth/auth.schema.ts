@@ -4,6 +4,11 @@ import { emailSchema, passwordSchema } from '../../common/validation/user';
 
 const otpSchema = z.number();
 
+const loginSchema = z.object({
+  email: emailSchema,
+  password: passwordSchema,
+});
+
 const registerSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
@@ -25,9 +30,21 @@ const verifyOtpSchema = z.object({
   otp: otpSchema,
 });
 
+type Login = z.infer<typeof loginSchema>;
 type Register = z.infer<typeof registerSchema>;
 type Recover = z.infer<typeof recoverSchema>;
 type SendOtp = z.infer<typeof sendOtpSchema>;
 type VerifyOtp = z.infer<typeof verifyOtpSchema>;
 
-export { registerSchema, recoverSchema, sendOtpSchema, verifyOtpSchema, Register, Recover, SendOtp, VerifyOtp };
+export {
+  loginSchema,
+  registerSchema,
+  recoverSchema,
+  sendOtpSchema,
+  verifyOtpSchema,
+  Login,
+  Register,
+  Recover,
+  SendOtp,
+  VerifyOtp,
+};

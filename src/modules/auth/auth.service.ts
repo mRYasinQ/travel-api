@@ -7,20 +7,50 @@ import redisClient from '../../configs/redis.config';
 import HttpStatusCode from '../../common/constants/HttpStatusCode';
 import AppeError from '../../common/utils/AppError';
 import formatMessage from '../../common/utils/formatMessage';
-import { hashPassword } from '../../common/utils/password';
-import { generateOtp } from '../../common/utils/random';
+import { comparePassword, hashPassword } from '../../common/utils/password';
+import { generateOtp, generateToken } from '../../common/utils/random';
 import { sendMailSync } from '../../common/utils/sendMail';
 
+import sessionEntity from '../session/session.entity';
 import userEntity from '../user/user.entity';
 
 import AuthMessage from './auth.message';
 import type { OtpData, RecoverOtpKey, RegisterOtpKey } from './types';
 
-const { OTP_EXPIRE, OTP_CACHE } = process.env;
+const { TOKEN_EXPIRE, OTP_EXPIRE, OTP_CACHE } = process.env;
 
 const checkUserExist = async (email: string) => {
   const userExist = await db.query.user.findFirst({ where: eq(userEntity.email, email), columns: { id: true } });
   return Boolean(userExist);
+};
+
+const loginUser = async (email: string, password: string, browser: string, os: string) => {
+  const user = await db.query.user.findFirst({
+    where: eq(userEntity.email, email),
+    columns: { id: true, password: true, isActive: true },
+  });
+  if (!user) throw new AppeError(AuthMessage.CREDENTIALS_INCORRECT, HttpStatusCode.BAD_REQUEST);
+
+  const { password: hashedPassword, isActive } = user;
+
+  const isPasswordValid = await comparePassword(password, hashedPassword);
+  if (!isPasswordValid) throw new AppeError(AuthMessage.CREDENTIALS_INCORRECT, HttpStatusCode.BAD_REQUEST);
+
+  if (!isActive) throw new AppeError(AuthMessage.USER_INACTIVE, HttpStatusCode.FORBIDDEN);
+
+  const token = generateToken();
+  const tokenExpire = Date.now() + ms(TOKEN_EXPIRE);
+  const tokenExpireDate = new Date(tokenExpire);
+
+  await db.insert(sessionEntity).values({
+    userId: user.id,
+    token,
+    browser,
+    os,
+    expireAt: tokenExpireDate,
+  });
+
+  return token;
 };
 
 const registerUser = async (email: string, password: string, otp: number) => {
@@ -122,7 +152,7 @@ const recoverUser = async (email: string, password: string, otp: number) => {
 
 const recoverSendOtp = async (email: string) => {
   const user = await checkUserExist(email);
-  if (!user) throw new AppeError(AuthMessage.EMAIL_INCORRECT, HttpStatusCode.NOT_FOUND);
+  if (!user) throw new AppeError(AuthMessage.EMAIL_INCORRECT, HttpStatusCode.BAD_REQUEST);
 
   const key: RecoverOtpKey = `recover:otp:${email}`;
 
@@ -171,4 +201,4 @@ const recoverVerifyOtp = async (email: string, otp: number) => {
   return;
 };
 
-export { registerUser, registerSendOtp, registerVerifyOtp, recoverUser, recoverSendOtp, recoverVerifyOtp };
+export { loginUser, registerUser, registerSendOtp, registerVerifyOtp, recoverUser, recoverSendOtp, recoverVerifyOtp };

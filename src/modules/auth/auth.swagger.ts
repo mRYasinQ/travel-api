@@ -7,6 +7,20 @@
  *
  * components:
  *   schemas:
+ *     Login:
+ *       type: object
+ *       properties:
+ *         email:
+ *           type: string
+ *           format: email
+ *           example: test@example.com
+ *         password:
+ *           type: string
+ *           example: password
+ *       required:
+ *         - email
+ *         - password
+ *
  *     Register:
  *       type: object
  *       properties:
@@ -66,6 +80,26 @@
  *       required:
  *         - email
  *         - otp
+ *
+ *     LoginResponse:
+ *       type: object
+ *       properties:
+ *         status_code:
+ *           type: number
+ *           example: 200
+ *         data:
+ *           type: object
+ *           properties:
+ *             email:
+ *               type: string
+ *               format: email
+ *               example: test@example.com
+ *             token:
+ *               type: string
+ *               example: token
+ *         message:
+ *           type: string
+ *           example: Logged in successfully.
  *
  *     RegisterResponse:
  *       type: object
@@ -137,6 +171,53 @@
  *         message:
  *           type: string
  *           example: Otp verified successfully.
+ *
+ * /auth/login:
+ *   post:
+ *     summary: Login a user.
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Login'
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             $ref: '#/components/schemas/Login'
+ *     responses:
+ *       200:
+ *         description: Success.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LoginResponse'
+ *       400:
+ *         description: Bad Request.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status_code:
+ *                   type: number
+ *                   example: 400
+ *                 error:
+ *                   type: string
+ *                   example: Invalid email or password.
+ *       403:
+ *         description: Forbidden.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status_code:
+ *                   type: number
+ *                   example: 403
+ *                 error:
+ *                   type: string
+ *                   example: User inactive.
  *
  * /auth/register:
  *   post:
@@ -286,19 +367,6 @@
  *                 error:
  *                   type: string
  *                   example: Invalid email.
- *       404:
- *         description: Not Found.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status_code:
- *                   type: number
- *                   example: 404
- *                 error:
- *                   type: string
- *                   example: User not found.
  *
  * /auth/recover/send-otp:
  *   post:

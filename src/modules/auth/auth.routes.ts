@@ -3,6 +3,7 @@ import { Router } from 'express';
 import { validationBody } from '../../middlewares/validation.middleware';
 
 import {
+  loginHandler,
   recoverHandler,
   recoverSendOtpHandler,
   recoverVerifyOtpHandler,
@@ -10,9 +11,11 @@ import {
   registerSendOtpHandler,
   registerVerifyOtpHandler,
 } from './auth.controlller';
-import { recoverSchema, registerSchema, sendOtpSchema, verifyOtpSchema } from './auth.schema';
+import { loginSchema, recoverSchema, registerSchema, sendOtpSchema, verifyOtpSchema } from './auth.schema';
 
 const authRouter = Router();
+
+authRouter.post('/login', validationBody(loginSchema), loginHandler);
 
 authRouter.post('/register', validationBody(registerSchema), registerHandler);
 authRouter.post('/register/send-otp', validationBody(sendOtpSchema), registerSendOtpHandler);
