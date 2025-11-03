@@ -6,7 +6,7 @@ import userEntity from '../user/user.entity';
 const sessionEntity = mysqlTable('session', {
   id: int('id').primaryKey().autoincrement(),
   browser: varchar('browser', { length: 30 }).notNull(),
-  os: varchar('device', { length: 30 }).notNull(),
+  os: varchar('os', { length: 30 }).notNull(),
   userId: int('user_id')
     .notNull()
     .references(() => userEntity.id, { onUpdate: 'cascade', onDelete: 'cascade' }),
