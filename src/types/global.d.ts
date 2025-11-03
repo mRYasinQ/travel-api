@@ -1,4 +1,5 @@
 import type { StringValue } from 'ms';
+import type { IResult } from 'ua-parser-js';
 
 declare global {
   namespace NodeJS {
@@ -23,8 +24,15 @@ declare global {
       MAIL_USER: string;
       MAIL_PASSWORD: string;
 
+      TOKEN_EXPIRE: StringValue;
       OTP_EXPIRE: StringValue;
       OTP_CACHE: StringValue;
+    }
+  }
+
+  namespace Express {
+    interface Request {
+      userAgent?: IResult;
     }
   }
 }

@@ -4,6 +4,8 @@ import { connectToDb } from './configs/db.config';
 import logger from './configs/logger.config';
 import { connectToRedis } from './configs/redis.config';
 
+import userAgentParser from './middlewares/userAgent.middleware';
+
 import { appErrorHandler, notFoundErrorHandler } from './modules/exception/exception.middleware';
 
 import appRouter from './app.routes';
@@ -18,6 +20,8 @@ const main = async () => {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+
+  app.use(userAgentParser);
 
   app.use(appRouter);
 
