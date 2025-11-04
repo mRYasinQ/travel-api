@@ -28,7 +28,7 @@ const main = async () => {
   app.use(notFoundErrorHandler);
   app.use(appErrorHandler);
 
-  app.listen(APP_PORT, () => logger.info(`Server run on port ${APP_PORT}: ${BASE_URL}.`));
+  app.listen(Number(APP_PORT), () => logger.info(`Server run on port ${APP_PORT}: ${BASE_URL}.`));
 };
 
 main();

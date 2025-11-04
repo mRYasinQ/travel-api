@@ -9,21 +9,21 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       NODE_ENV: 'development' | 'production';
-      APP_PORT: number;
+      APP_PORT: string;
       BASE_URL: string;
 
       REDIS_URL: string;
 
       DB_HOST: string;
-      DB_PORT: number;
+      DB_PORT: string;
       DB_USER: string;
       DB_PASSWORD: string;
       DB_NAME: string;
-      DB_CONNECTION_LIMIT: number;
+      DB_CONNECTION_LIMIT: string;
 
       MAIL_SECURE: '0' | '1';
       MAIL_HOST: string;
-      MAIL_PORT: number;
+      MAIL_PORT: string;
       MAIL_USER: string;
       MAIL_PASSWORD: string;
 
