@@ -1,6 +1,10 @@
 import type { StringValue } from 'ms';
 import type { IResult } from 'ua-parser-js';
 
+import userEntity from '../modules/user/user.entity';
+
+type User = Omit<typeof userEntity.$inferSelect, 'password'>;
+
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
@@ -32,6 +36,8 @@ declare global {
 
   namespace Express {
     interface Request {
+      user?: User;
+      activeSession?: string;
       userAgent?: IResult;
     }
   }
