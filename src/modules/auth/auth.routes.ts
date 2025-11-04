@@ -12,7 +12,7 @@ import {
   registerHandler,
   registerSendOtpHandler,
   registerVerifyOtpHandler,
-} from './auth.controlller';
+} from './auth.controller';
 import { loginSchema, recoverSchema, registerSchema, sendOtpSchema, verifyOtpSchema } from './auth.schema';
 
 const authRouter = Router();

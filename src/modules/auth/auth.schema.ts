@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { emailSchema, passwordSchema } from '../../common/validations/user';
 
-const otpSchema = z.number();
+const otpSchema = z.number().min(10000).max(99999);
 
 const loginSchema = z.object({
   email: emailSchema,
