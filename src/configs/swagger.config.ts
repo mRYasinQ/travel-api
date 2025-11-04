@@ -23,7 +23,6 @@ const swaggerDefinition: OAS3Definition = {
       },
     },
   },
-  security: [{ bearerAuth: [] }],
   servers: [{ url: BASE_URL }],
 };
 
