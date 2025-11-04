@@ -10,8 +10,6 @@ const AuthMessage = Object.freeze({
   INVALID_OTP: 'Invalid otp.',
   EMAIL_INCORRECT: 'Email incorrect.',
   CREDENTIALS_INCORRECT: 'Email or password incorrect.',
-  USER_INACTIVE: 'User inactive.',
-  AUTHENTICATION_REQUIRED: 'Access denied. Authentication is required.',
   WAIT_BEFORE_NEW_OTP: 'You must wait :time seconds before requesting a new OTP.',
 });
 

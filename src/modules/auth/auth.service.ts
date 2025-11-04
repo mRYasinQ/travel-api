@@ -5,6 +5,7 @@ import db from '../../configs/db.config';
 import redisClient from '../../configs/redis.config';
 
 import HttpStatusCode from '../../common/constants/HttpStatusCode';
+import CommonMessage from '../../common/constants/Message';
 import AppeError from '../../common/utils/AppError';
 import formatMessage from '../../common/utils/formatMessage';
 import { comparePassword, hashPassword } from '../../common/utils/password';
@@ -36,7 +37,7 @@ const loginUser = async (email: string, password: string, browser: string, os: s
   const isPasswordValid = await comparePassword(password, hashedPassword);
   if (!isPasswordValid) throw new AppeError(AuthMessage.CREDENTIALS_INCORRECT, HttpStatusCode.BAD_REQUEST);
 
-  if (!isActive) throw new AppeError(AuthMessage.USER_INACTIVE, HttpStatusCode.FORBIDDEN);
+  if (!isActive) throw new AppeError(CommonMessage.USER_INACTIVE, HttpStatusCode.FORBIDDEN);
 
   const token = generateToken();
   const tokenExpire = Date.now() + ms(TOKEN_EXPIRE);

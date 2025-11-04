@@ -1,5 +1,6 @@
 import { Router } from 'express';
 
+import checkAuth from '../../middlewares/checkAuth.middleware';
 import { validationBody } from '../../middlewares/validation.middleware';
 
 import {
@@ -12,7 +13,6 @@ import {
   registerSendOtpHandler,
   registerVerifyOtpHandler,
 } from './auth.controlller';
-import checkAuth from './auth.guard';
 import { loginSchema, recoverSchema, registerSchema, sendOtpSchema, verifyOtpSchema } from './auth.schema';
 
 const authRouter = Router();

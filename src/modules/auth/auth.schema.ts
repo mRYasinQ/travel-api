@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { emailSchema, passwordSchema } from '../../common/validation/user';
+import { emailSchema, passwordSchema } from '../../common/validations/user';
 
 const otpSchema = z.number();
 
