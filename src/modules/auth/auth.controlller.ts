@@ -1,12 +1,14 @@
 import type { RequestHandler } from 'express';
 
 import HttpStatusCode from '../../common/constants/HttpStatusCode';
+import AppeError from '../../common/utils/AppError';
 import createResponse from '../../common/utils/createResponse';
 
 import AuthMessage from './auth.message';
 import type { Login, Recover, Register, SendOtp, VerifyOtp } from './auth.schema';
 import {
   loginUser,
+  logoutUser,
   recoverSendOtp,
   recoverUser,
   recoverVerifyOtp,
@@ -102,6 +104,19 @@ const recoverVerifyOtpHandler: RequestHandler = async (req, res, next) => {
   }
 };
 
+const logoutHandler: RequestHandler = async (req, res, next) => {
+  try {
+    const activeToken = req.activeToken;
+    if (!activeToken) throw new AppeError(AuthMessage.AUTHENTICATION_REQUIRED, HttpStatusCode.UNAUTHORIZED);
+
+    await logoutUser(activeToken);
+
+    return createResponse(res, HttpStatusCode.OK, AuthMessage.LOGOUT_SUCCESS);
+  } catch (error) {
+    return next(error);
+  }
+};
+
 export {
   loginHandler,
   registerHandler,
@@ -110,4 +125,5 @@ export {
   recoverHandler,
   recoverSendOtpHandler,
   recoverVerifyOtpHandler,
+  logoutHandler,
 };

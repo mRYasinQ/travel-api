@@ -448,4 +448,51 @@
  *                 error:
  *                   type: string
  *                   example: Invalid Otp.
+ *
+ * /auth/logout:
+ *   delete:
+ *     summary: Logout a user.
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status_code:
+ *                   type: number
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: Logged out successfully.
+ *       401:
+ *         description: Unauthorized.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status_code:
+ *                   type: number
+ *                   example: 401
+ *                 error:
+ *                   type: string
+ *                   example: Access denied. Authentication is required.
+ *       403:
+ *         description: Forbidden.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status_code:
+ *                   type: number
+ *                   example: 403
+ *                 error:
+ *                   type: string
+ *                   example: User inactive.
  */

@@ -201,4 +201,19 @@ const recoverVerifyOtp = async (email: string, otp: number) => {
   return;
 };
 
-export { loginUser, registerUser, registerSendOtp, registerVerifyOtp, recoverUser, recoverSendOtp, recoverVerifyOtp };
+const logoutUser = async (activeToken: string) => {
+  await db.delete(sessionEntity).where(eq(sessionEntity.token, activeToken));
+
+  return;
+};
+
+export {
+  loginUser,
+  registerUser,
+  registerSendOtp,
+  registerVerifyOtp,
+  recoverUser,
+  recoverSendOtp,
+  recoverVerifyOtp,
+  logoutUser,
+};

@@ -14,7 +14,9 @@ const checkAuth = (isOptional: boolean = false): RequestHandler => {
   return async (req, _res, next) => {
     try {
       const bearerToken = req.headers['authorization'];
-      if (!bearerToken) throw new AppeError(AuthMessage.AUTHENTICATION_REQUIRED, HttpStatusCode.UNAUTHORIZED);
+      if (!bearerToken || !bearerToken.startsWith('Bearer ')) {
+        throw new AppeError(AuthMessage.AUTHENTICATION_REQUIRED, HttpStatusCode.UNAUTHORIZED);
+      }
 
       const userToken = bearerToken.split(' ')[1];
       if (!userToken) throw new AppeError(AuthMessage.AUTHENTICATION_REQUIRED, HttpStatusCode.UNAUTHORIZED);
@@ -41,7 +43,7 @@ const checkAuth = (isOptional: boolean = false): RequestHandler => {
       if (!user.isActive) throw new AppeError(AuthMessage.USER_INACTIVE, HttpStatusCode.FORBIDDEN);
 
       req.user = user;
-      req.activeSession = token;
+      req.activeToken = token;
 
       return next();
     } catch (error) {

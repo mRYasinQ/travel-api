@@ -9,7 +9,6 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       NODE_ENV: 'development' | 'production';
-
       APP_PORT: number;
       BASE_URL: string;
 
@@ -37,7 +36,7 @@ declare global {
   namespace Express {
     interface Request {
       user?: User;
-      activeSession?: string;
+      activeToken?: string;
       userAgent?: IResult;
     }
   }

@@ -2,6 +2,7 @@ const AuthMessage = Object.freeze({
   LOGIN_SUCCESS: 'Logged in successfully.',
   REGISTER_SUCCESS: 'Registered successfully.',
   RECOVER_SUCCESS: 'Recovered successfully.',
+  LOGOUT_SUCCESS: 'Logged out successfully.',
   SENT_OTP: 'Otp sent successfully.',
   VERIFIED_OTP: 'Otp verified successfully.',
   OTP_ALREADY_VERIFIED: 'Otp already verified.',
