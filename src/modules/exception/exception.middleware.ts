@@ -3,7 +3,7 @@ import type { ErrorRequestHandler, RequestHandler } from 'express';
 import logger from '../../configs/logger.config';
 
 import type { HttpStatusCodeKeys } from '../../common/constants/HttpStatusCode';
-import AppeError from '../../common/utils/AppError';
+import AppError from '../../common/utils/AppError';
 import createResponse from '../../common/utils/createResponse';
 import formatMessage from '../../common/utils/formatMessage';
 
@@ -19,12 +19,22 @@ const notFoundErrorHandler: RequestHandler = (req, res) => {
   );
 };
 
+const requestTimeoutHandler: ErrorRequestHandler = (err, req, res, next) => {
+  const isTimedout = req.timedout || err?.code === 'ETIMEDOUT';
+  if (isTimedout) {
+    if (res.headersSent) return;
+    return createResponse(res, 'SERVICE_UNAVAILABLE', ExceptionMessage.SERVICE_UNAVAILABLE, undefined, true);
+  }
+
+  return next(err);
+};
+
 const appErrorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
   let status: HttpStatusCodeKeys = 'INTERNAL_SERVER_ERROR';
   let message: string = ExceptionMessage.INTERNAL_SERVER;
   let isOperationalError: boolean = false;
 
-  if (err instanceof AppeError) {
+  if (err instanceof AppError) {
     if (err.isOperational) {
       status = err.status;
       message = err.message;
@@ -37,4 +47,4 @@ const appErrorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
   return createResponse(res, status, message, undefined, true);
 };
 
-export { notFoundErrorHandler, appErrorHandler };
+export { notFoundErrorHandler, requestTimeoutHandler, appErrorHandler };

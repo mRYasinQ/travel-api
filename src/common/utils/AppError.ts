@@ -1,6 +1,6 @@
 import type { HttpStatusCodeKeys } from '../constants/HttpStatusCode';
 
-class AppeError extends Error {
+class AppError extends Error {
   status: HttpStatusCodeKeys;
   isOperational: boolean;
 
@@ -14,4 +14,4 @@ class AppeError extends Error {
   }
 }
 
-export default AppeError;
+export default AppError;

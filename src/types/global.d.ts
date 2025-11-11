@@ -30,6 +30,7 @@ declare global {
       TOKEN_EXPIRE: StringValue;
       OTP_EXPIRE: StringValue;
       OTP_CACHE: StringValue;
+      REQUEST_TIMEOUT: string;
     }
   }
 
