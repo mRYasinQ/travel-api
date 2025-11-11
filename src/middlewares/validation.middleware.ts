@@ -1,7 +1,6 @@
 import type { RequestHandler } from 'express';
 import type { ZodType } from 'zod';
 
-import HttpStatusCode from '../common/constants/HttpStatusCode';
 import AppeError from '../common/utils/AppError';
 
 type DataSource = 'body' | 'query' | 'params';
@@ -16,7 +15,7 @@ const createValidator = (schema: ZodType, source: DataSource): RequestHandler =>
         req[source] = result.data;
       } else {
         const firstErrorMessage = result.error.issues[0].message;
-        throw new AppeError(firstErrorMessage, HttpStatusCode.BAD_REQUEST);
+        throw new AppeError(firstErrorMessage, 'BAD_REQUEST');
       }
 
       return next();

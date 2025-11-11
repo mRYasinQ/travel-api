@@ -1,6 +1,5 @@
 import type { RequestHandler } from 'express';
 
-import HttpStatusCode from '../../common/constants/HttpStatusCode';
 import CommonMessage from '../../common/constants/Message';
 import AppeError from '../../common/utils/AppError';
 import createResponse from '../../common/utils/createResponse';
@@ -27,7 +26,7 @@ const loginHandler: RequestHandler = async (req, res, next) => {
 
     const token = await loginUser(email, password, browser, os);
 
-    return createResponse(res, HttpStatusCode.OK, AuthMessage.LOGIN_SUCCESS, { email, token });
+    return createResponse(res, 'OK', AuthMessage.LOGIN_SUCCESS, { email, token });
   } catch (error) {
     return next(error);
   }
@@ -39,7 +38,7 @@ const registerHandler: RequestHandler = async (req, res, next) => {
 
     await registerUser(email, password, otp);
 
-    return createResponse(res, HttpStatusCode.CREATED, AuthMessage.REGISTER_SUCCESS, { email });
+    return createResponse(res, 'CREATED', AuthMessage.REGISTER_SUCCESS, { email });
   } catch (error) {
     return next(error);
   }
@@ -51,7 +50,7 @@ const registerSendOtpHandler: RequestHandler = async (req, res, next) => {
 
     await registerSendOtp(email);
 
-    return createResponse(res, HttpStatusCode.OK, AuthMessage.SENT_OTP, { email });
+    return createResponse(res, 'OK', AuthMessage.SENT_OTP, { email });
   } catch (error) {
     return next(error);
   }
@@ -63,7 +62,7 @@ const registerVerifyOtpHandler: RequestHandler = async (req, res, next) => {
 
     await registerVerifyOtp(email, otp);
 
-    return createResponse(res, HttpStatusCode.OK, AuthMessage.VERIFIED_OTP, { email, is_verified: true });
+    return createResponse(res, 'OK', AuthMessage.VERIFIED_OTP, { email, is_verified: true });
   } catch (error) {
     return next(error);
   }
@@ -75,7 +74,7 @@ const recoverHandler: RequestHandler = async (req, res, next) => {
 
     await recoverUser(email, password, otp);
 
-    return createResponse(res, HttpStatusCode.OK, AuthMessage.RECOVER_SUCCESS, { email });
+    return createResponse(res, 'OK', AuthMessage.RECOVER_SUCCESS, { email });
   } catch (error) {
     return next(error);
   }
@@ -87,7 +86,7 @@ const recoverSendOtpHandler: RequestHandler = async (req, res, next) => {
 
     await recoverSendOtp(email);
 
-    return createResponse(res, HttpStatusCode.OK, AuthMessage.SENT_OTP, { email });
+    return createResponse(res, 'OK', AuthMessage.SENT_OTP, { email });
   } catch (error) {
     return next(error);
   }
@@ -99,7 +98,7 @@ const recoverVerifyOtpHandler: RequestHandler = async (req, res, next) => {
 
     await recoverVerifyOtp(email, otp);
 
-    return createResponse(res, HttpStatusCode.OK, AuthMessage.VERIFIED_OTP, { email, is_verified: true });
+    return createResponse(res, 'OK', AuthMessage.VERIFIED_OTP, { email, is_verified: true });
   } catch (error) {
     return next(error);
   }
@@ -108,11 +107,11 @@ const recoverVerifyOtpHandler: RequestHandler = async (req, res, next) => {
 const logoutHandler: RequestHandler = async (req, res, next) => {
   try {
     const activeToken = req.activeToken;
-    if (!activeToken) throw new AppeError(CommonMessage.AUTHENTICATION_REQUIRED, HttpStatusCode.UNAUTHORIZED);
+    if (!activeToken) throw new AppeError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
 
     await logoutUser(activeToken);
 
-    return createResponse(res, HttpStatusCode.OK, AuthMessage.LOGOUT_SUCCESS);
+    return createResponse(res, 'OK', AuthMessage.LOGOUT_SUCCESS);
   } catch (error) {
     return next(error);
   }

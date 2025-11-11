@@ -4,7 +4,6 @@ import ms from 'ms';
 import db from '../../configs/db.config';
 import redisClient from '../../configs/redis.config';
 
-import HttpStatusCode from '../../common/constants/HttpStatusCode';
 import CommonMessage from '../../common/constants/Message';
 import AppeError from '../../common/utils/AppError';
 import formatMessage from '../../common/utils/formatMessage';
@@ -30,14 +29,14 @@ const loginUser = async (email: string, password: string, browser: string, os: s
     where: eq(userEntity.email, email),
     columns: { id: true, password: true, isActive: true },
   });
-  if (!user) throw new AppeError(AuthMessage.CREDENTIALS_INCORRECT, HttpStatusCode.BAD_REQUEST);
+  if (!user) throw new AppeError(AuthMessage.CREDENTIALS_INCORRECT, 'BAD_REQUEST');
 
   const { password: hashedPassword, isActive } = user;
 
   const isPasswordValid = await comparePassword(password, hashedPassword);
-  if (!isPasswordValid) throw new AppeError(AuthMessage.CREDENTIALS_INCORRECT, HttpStatusCode.BAD_REQUEST);
+  if (!isPasswordValid) throw new AppeError(AuthMessage.CREDENTIALS_INCORRECT, 'BAD_REQUEST');
 
-  if (!isActive) throw new AppeError(CommonMessage.USER_INACTIVE, HttpStatusCode.FORBIDDEN);
+  if (!isActive) throw new AppeError(CommonMessage.USER_INACTIVE, 'FORBIDDEN');
 
   const token = generateToken();
   const tokenExpire = Date.now() + ms(TOKEN_EXPIRE);
@@ -58,17 +57,17 @@ const registerUser = async (email: string, password: string, otp: number) => {
   const key: RegisterOtpKey = `register:otp:${email}`;
 
   const otpResult = await redisClient.get(key);
-  if (!otpResult) throw new AppeError(AuthMessage.INVALID_OTP, HttpStatusCode.BAD_REQUEST);
+  if (!otpResult) throw new AppeError(AuthMessage.INVALID_OTP, 'BAD_REQUEST');
 
   const otpData: OtpData = JSON.parse(otpResult);
   if (otpData.otp !== otp || !otpData.verified) {
-    throw new AppeError(AuthMessage.INVALID_OTP, HttpStatusCode.BAD_REQUEST);
+    throw new AppeError(AuthMessage.INVALID_OTP, 'BAD_REQUEST');
   }
 
   await redisClient.del(key);
 
   const userExist = await checkUserExist(email);
-  if (userExist) throw new AppeError(AuthMessage.EMAIL_ALREADY_ASSOCIATED, HttpStatusCode.BAD_REQUEST);
+  if (userExist) throw new AppeError(AuthMessage.EMAIL_ALREADY_ASSOCIATED, 'BAD_REQUEST');
 
   const username = email.split('@')[0];
   const hashedPassword = await hashPassword(password);
@@ -80,7 +79,7 @@ const registerUser = async (email: string, password: string, otp: number) => {
 
 const registerSendOtp = async (email: string) => {
   const user = await checkUserExist(email);
-  if (user) throw new AppeError(AuthMessage.EMAIL_ALREADY_ASSOCIATED, HttpStatusCode.BAD_REQUEST);
+  if (user) throw new AppeError(AuthMessage.EMAIL_ALREADY_ASSOCIATED, 'BAD_REQUEST');
 
   const key: RegisterOtpKey = `register:otp:${email}`;
 
@@ -89,10 +88,7 @@ const registerSendOtp = async (email: string) => {
     const { verified }: OtpData = JSON.parse(otpData);
 
     if (!verified) {
-      throw new AppeError(
-        formatMessage(AuthMessage.WAIT_BEFORE_NEW_OTP, { time: ttl }),
-        HttpStatusCode.TOO_MANY_REQUESTS,
-      );
+      throw new AppeError(formatMessage(AuthMessage.WAIT_BEFORE_NEW_OTP, { time: ttl }), 'TOO_MANY_REQUESTS');
     }
   }
 
@@ -115,11 +111,11 @@ const registerVerifyOtp = async (email: string, otp: number) => {
   const key: RegisterOtpKey = `register:otp:${email}`;
 
   const result = await redisClient.get(key);
-  if (!result) throw new AppeError(AuthMessage.INVALID_OTP, HttpStatusCode.BAD_REQUEST);
+  if (!result) throw new AppeError(AuthMessage.INVALID_OTP, 'BAD_REQUEST');
 
   const otpData: OtpData = JSON.parse(result);
-  if (otpData.verified) throw new AppeError(AuthMessage.OTP_ALREADY_VERIFIED, HttpStatusCode.BAD_REQUEST);
-  if (otpData.otp !== otp) throw new AppeError(AuthMessage.INVALID_OTP, HttpStatusCode.BAD_REQUEST);
+  if (otpData.verified) throw new AppeError(AuthMessage.OTP_ALREADY_VERIFIED, 'BAD_REQUEST');
+  if (otpData.otp !== otp) throw new AppeError(AuthMessage.INVALID_OTP, 'BAD_REQUEST');
 
   const value = JSON.stringify({ otp, verified: true });
   const expiresIn = ms(OTP_CACHE);
@@ -133,12 +129,10 @@ const recoverUser = async (email: string, password: string, otp: number) => {
   const key: RecoverOtpKey = `recover:otp:${email}`;
 
   const otpResult = await redisClient.get(key);
-  if (!otpResult) throw new AppeError(AuthMessage.INVALID_OTP, HttpStatusCode.BAD_REQUEST);
+  if (!otpResult) throw new AppeError(AuthMessage.INVALID_OTP, 'BAD_REQUEST');
 
   const otpData: OtpData = JSON.parse(otpResult);
-  if (otpData.otp !== otp || !otpData.verified) {
-    throw new AppeError(AuthMessage.INVALID_OTP, HttpStatusCode.BAD_REQUEST);
-  }
+  if (otpData.otp !== otp || !otpData.verified) throw new AppeError(AuthMessage.INVALID_OTP, 'BAD_REQUEST');
 
   await redisClient.del(key);
 
@@ -153,7 +147,7 @@ const recoverUser = async (email: string, password: string, otp: number) => {
 
 const recoverSendOtp = async (email: string) => {
   const user = await checkUserExist(email);
-  if (!user) throw new AppeError(AuthMessage.EMAIL_INCORRECT, HttpStatusCode.BAD_REQUEST);
+  if (!user) throw new AppeError(AuthMessage.EMAIL_INCORRECT, 'BAD_REQUEST');
 
   const key: RecoverOtpKey = `recover:otp:${email}`;
 
@@ -162,10 +156,7 @@ const recoverSendOtp = async (email: string) => {
     const { verified }: OtpData = JSON.parse(otpData);
 
     if (!verified) {
-      throw new AppeError(
-        formatMessage(AuthMessage.WAIT_BEFORE_NEW_OTP, { time: ttl }),
-        HttpStatusCode.TOO_MANY_REQUESTS,
-      );
+      throw new AppeError(formatMessage(AuthMessage.WAIT_BEFORE_NEW_OTP, { time: ttl }), 'TOO_MANY_REQUESTS');
     }
   }
 
@@ -188,11 +179,11 @@ const recoverVerifyOtp = async (email: string, otp: number) => {
   const key: RecoverOtpKey = `recover:otp:${email}`;
 
   const result = await redisClient.get(key);
-  if (!result) throw new AppeError(AuthMessage.INVALID_OTP, HttpStatusCode.BAD_REQUEST);
+  if (!result) throw new AppeError(AuthMessage.INVALID_OTP, 'BAD_REQUEST');
 
   const otpData: OtpData = JSON.parse(result);
-  if (otpData.verified) throw new AppeError(AuthMessage.OTP_ALREADY_VERIFIED, HttpStatusCode.BAD_REQUEST);
-  if (otpData.otp !== otp) throw new AppeError(AuthMessage.INVALID_OTP, HttpStatusCode.BAD_REQUEST);
+  if (otpData.verified) throw new AppeError(AuthMessage.OTP_ALREADY_VERIFIED, 'BAD_REQUEST');
+  if (otpData.otp !== otp) throw new AppeError(AuthMessage.INVALID_OTP, 'BAD_REQUEST');
 
   const value = JSON.stringify({ otp, verified: true });
   const expiresIn = ms(OTP_CACHE);
