@@ -11,12 +11,17 @@ import { clearSessions, deleteSession, getSession, getSessions } from './session
 
 const getSessionsHandler: RequestHandler = async (req, res, next) => {
   try {
-    const userId = req.user?.id;
-    if (!userId) throw new AppError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
+    const user = req.user;
+    if (!user) throw new AppError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
 
-    const sessions = await getSessions(userId);
+    const sessions = await getSessions(user.id);
 
-    return createResponse(res, 'OK', SessionMessage.SESSIONS_RETRIEVED, toSessionsResponse(sessions));
+    return createResponse(
+      res,
+      'OK',
+      SessionMessage.SESSIONS_RETRIEVED,
+      toSessionsResponse(sessions, user.activeSession.id),
+    );
   } catch (error) {
     return next(error);
   }
@@ -24,14 +29,19 @@ const getSessionsHandler: RequestHandler = async (req, res, next) => {
 
 const getSessionHandler: RequestHandler = async (req, res, next) => {
   try {
-    const userId = req.user?.id;
-    if (!userId) throw new AppError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
+    const user = req.user;
+    if (!user) throw new AppError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
 
     const { id } = req.validatedParams as SessionParam;
 
-    const session = await getSession(id, userId);
+    const session = await getSession(id, user.id);
 
-    return createResponse(res, 'OK', SessionMessage.SESSION_RETRIEVED, toSessionResponse(session));
+    return createResponse(
+      res,
+      'OK',
+      SessionMessage.SESSION_RETRIEVED,
+      toSessionResponse(session, user.activeSession.id),
+    );
   } catch (error) {
     return next(error);
   }
