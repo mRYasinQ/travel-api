@@ -69,10 +69,9 @@ const registerUser = async (email: string, password: string, otp: string) => {
   const userExist = await checkUserExist(email);
   if (userExist) throw new AppeError(AuthMessage.EMAIL_ALREADY_ASSOCIATED, 'BAD_REQUEST');
 
-  const username = email.split('@')[0];
   const hashedPassword = await hashPassword(password);
 
-  await db.insert(userEntity).values({ email, password: hashedPassword, username, isEmailVerified: true });
+  await db.insert(userEntity).values({ email, password: hashedPassword, isEmailVerified: true });
 
   return;
 };

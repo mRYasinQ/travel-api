@@ -8,7 +8,7 @@ const userEntity = mysqlTable('user', {
   firstName: varchar('first_name', { length: 30 }),
   lastName: varchar('last_name', { length: 30 }),
   email: varchar('email', { length: 255 }).notNull().unique(),
-  username: varchar('username', { length: 40 }).notNull().unique(),
+  username: varchar('username', { length: 40 }).unique(),
   password: varchar('password', { length: 200 }).notNull(),
   isActive: boolean('is_active').notNull().default(true),
   isEmailVerified: boolean('is_email_verified').notNull().default(false),
