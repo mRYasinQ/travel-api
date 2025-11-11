@@ -62,5 +62,7 @@ enum HttpStatusCode {
   NETWORK_AUTHENTICATION_REQUIRED = 511,
 }
 
-export type HttpStatusCodeKeys = keyof typeof HttpStatusCode;
+type HttpStatusCodeKeys = keyof typeof HttpStatusCode;
+
+export { HttpStatusCodeKeys };
 export default HttpStatusCode;
