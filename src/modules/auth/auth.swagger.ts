@@ -17,6 +17,8 @@
  *         password:
  *           type: string
  *           example: password
+ *           minLength: 8
+ *           maxLength: 32
  *       required:
  *         - email
  *         - password
@@ -31,9 +33,13 @@
  *         password:
  *           type: string
  *           example: password
+ *           minLength: 8
+ *           maxLength: 32
  *         otp:
- *           type: number
+ *           type: string
  *           example: 12345
+ *           minLength: 5
+ *           maxLength: 5
  *       required:
  *         - email
  *         - password
@@ -49,9 +55,13 @@
  *         password:
  *           type: string
  *           example: password
+ *           minLength: 8
+ *           maxLength: 32
  *         otp:
- *           type: number
+ *           type: string
  *           example: 12345
+ *           minLength: 5
+ *           maxLength: 5
  *       required:
  *         - email
  *         - password
@@ -75,8 +85,10 @@
  *           format: email
  *           example: test@example.com
  *         otp:
- *           type: number
+ *           type: string
  *           example: 12345
+ *           minLength: 5
+ *           maxLength: 5
  *       required:
  *         - email
  *         - otp

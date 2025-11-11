@@ -53,7 +53,7 @@ const loginUser = async (email: string, password: string, browser: string, os: s
   return token;
 };
 
-const registerUser = async (email: string, password: string, otp: number) => {
+const registerUser = async (email: string, password: string, otp: string) => {
   const key: RegisterOtpKey = `register:otp:${email}`;
 
   const otpResult = await redisClient.get(key);
@@ -92,7 +92,7 @@ const registerSendOtp = async (email: string) => {
     }
   }
 
-  const otp = generateOtp();
+  const otp = String(generateOtp());
   const value = JSON.stringify({ otp, verified: false });
   const expiresIn = ms(OTP_EXPIRE);
 
@@ -107,7 +107,7 @@ const registerSendOtp = async (email: string) => {
   return;
 };
 
-const registerVerifyOtp = async (email: string, otp: number) => {
+const registerVerifyOtp = async (email: string, otp: string) => {
   const key: RegisterOtpKey = `register:otp:${email}`;
 
   const result = await redisClient.get(key);
@@ -125,7 +125,7 @@ const registerVerifyOtp = async (email: string, otp: number) => {
   return;
 };
 
-const recoverUser = async (email: string, password: string, otp: number) => {
+const recoverUser = async (email: string, password: string, otp: string) => {
   const key: RecoverOtpKey = `recover:otp:${email}`;
 
   const otpResult = await redisClient.get(key);
@@ -160,7 +160,7 @@ const recoverSendOtp = async (email: string) => {
     }
   }
 
-  const otp = generateOtp();
+  const otp = String(generateOtp());
   const value = JSON.stringify({ otp, verified: false });
   const expiresIn = ms(OTP_EXPIRE);
 
@@ -175,7 +175,7 @@ const recoverSendOtp = async (email: string) => {
   return;
 };
 
-const recoverVerifyOtp = async (email: string, otp: number) => {
+const recoverVerifyOtp = async (email: string, otp: string) => {
   const key: RecoverOtpKey = `recover:otp:${email}`;
 
   const result = await redisClient.get(key);

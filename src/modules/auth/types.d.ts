@@ -2,7 +2,7 @@ type RegisterOtpKey = `register:otp:${string}`;
 type RecoverOtpKey = `recover:otp:${string}`;
 
 interface OtpData {
-  otp: number;
+  otp: string;
   verified: boolean;
 }
 
