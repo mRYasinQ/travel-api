@@ -1,7 +1,7 @@
 import type { RequestHandler } from 'express';
 
 import CommonMessage from '../../common/constants/Message';
-import AppeError from '../../common/utils/AppError';
+import AppError from '../../common/utils/AppError';
 import createResponse from '../../common/utils/createResponse';
 
 import AuthMessage from './auth.message';
@@ -107,7 +107,7 @@ const recoverVerifyOtpHandler: RequestHandler = async (req, res, next) => {
 const logoutHandler: RequestHandler = async (req, res, next) => {
   try {
     const activeToken = req.activeToken;
-    if (!activeToken) throw new AppeError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
+    if (!activeToken) throw new AppError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
 
     await logoutUser(activeToken);
 
