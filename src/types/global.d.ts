@@ -1,9 +1,11 @@
 import type { StringValue } from 'ms';
 import type { IResult } from 'ua-parser-js';
 
+import sessionEntity from '../modules/session/session.entity';
 import userEntity from '../modules/user/user.entity';
 
 type User = Omit<typeof userEntity.$inferSelect, 'password'>;
+type Session = Pick<typeof sessionEntity.$inferSelect, 'id' | 'token'>;
 
 declare global {
   namespace NodeJS {
@@ -36,8 +38,12 @@ declare global {
 
   namespace Express {
     interface Request {
+      validatedBody: unknown;
+      validatedQuery: unknown;
+      validatedParams: unknown;
+
       user?: User;
-      activeToken?: string;
+      activeSession?: Session;
       userAgent?: IResult;
     }
   }

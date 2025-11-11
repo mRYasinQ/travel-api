@@ -25,7 +25,7 @@ const checkAuth = (isOptional: boolean = false): RequestHandler => {
       });
       if (!session) throw new AppError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
 
-      const { token, browser, os, expireAt, user } = session;
+      const { id, token, browser, os, expireAt, user } = session;
 
       const browserName = req.userAgent?.browser.name;
       const osName = req.userAgent?.os.name;
@@ -37,7 +37,7 @@ const checkAuth = (isOptional: boolean = false): RequestHandler => {
       if (!user.isActive) throw new AppError(CommonMessage.USER_INACTIVE, 'FORBIDDEN');
 
       req.user = user;
-      req.activeToken = token;
+      req.activeSession = { id, token };
 
       return next();
     } catch (error) {

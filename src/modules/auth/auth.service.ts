@@ -192,8 +192,8 @@ const recoverVerifyOtp = async (email: string, otp: string) => {
   return;
 };
 
-const logoutUser = async (activeToken: string) => {
-  await db.delete(sessionEntity).where(eq(sessionEntity.token, activeToken));
+const logoutUser = async (sessionId: number) => {
+  await db.delete(sessionEntity).where(eq(sessionEntity.id, sessionId));
 
   return;
 };

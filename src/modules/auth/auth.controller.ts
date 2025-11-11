@@ -19,7 +19,7 @@ import {
 
 const loginHandler: RequestHandler = async (req, res, next) => {
   try {
-    const { email, password } = req.body as Login;
+    const { email, password } = req.validatedBody as Login;
 
     const browser = req.userAgent?.browser.name ?? 'unknown';
     const os = req.userAgent?.os.name ?? 'unknown';
@@ -34,7 +34,7 @@ const loginHandler: RequestHandler = async (req, res, next) => {
 
 const registerHandler: RequestHandler = async (req, res, next) => {
   try {
-    const { email, password, otp } = req.body as Register;
+    const { email, password, otp } = req.validatedBody as Register;
 
     await registerUser(email, password, otp);
 
@@ -46,7 +46,7 @@ const registerHandler: RequestHandler = async (req, res, next) => {
 
 const registerSendOtpHandler: RequestHandler = async (req, res, next) => {
   try {
-    const { email } = req.body as SendOtp;
+    const { email } = req.validatedBody as SendOtp;
 
     await registerSendOtp(email);
 
@@ -58,7 +58,7 @@ const registerSendOtpHandler: RequestHandler = async (req, res, next) => {
 
 const registerVerifyOtpHandler: RequestHandler = async (req, res, next) => {
   try {
-    const { email, otp } = req.body as VerifyOtp;
+    const { email, otp } = req.validatedBody as VerifyOtp;
 
     await registerVerifyOtp(email, otp);
 
@@ -70,7 +70,7 @@ const registerVerifyOtpHandler: RequestHandler = async (req, res, next) => {
 
 const recoverHandler: RequestHandler = async (req, res, next) => {
   try {
-    const { email, password, otp } = req.body as Recover;
+    const { email, password, otp } = req.validatedBody as Recover;
 
     await recoverUser(email, password, otp);
 
@@ -82,7 +82,7 @@ const recoverHandler: RequestHandler = async (req, res, next) => {
 
 const recoverSendOtpHandler: RequestHandler = async (req, res, next) => {
   try {
-    const { email } = req.body as SendOtp;
+    const { email } = req.validatedBody as SendOtp;
 
     await recoverSendOtp(email);
 
@@ -94,7 +94,7 @@ const recoverSendOtpHandler: RequestHandler = async (req, res, next) => {
 
 const recoverVerifyOtpHandler: RequestHandler = async (req, res, next) => {
   try {
-    const { email, otp } = req.body as VerifyOtp;
+    const { email, otp } = req.validatedBody as VerifyOtp;
 
     await recoverVerifyOtp(email, otp);
 
@@ -106,10 +106,10 @@ const recoverVerifyOtpHandler: RequestHandler = async (req, res, next) => {
 
 const logoutHandler: RequestHandler = async (req, res, next) => {
   try {
-    const activeToken = req.activeToken;
-    if (!activeToken) throw new AppError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
+    const activeSession = req.activeSession;
+    if (!activeSession) throw new AppError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
 
-    await logoutUser(activeToken);
+    await logoutUser(activeSession.id);
 
     return createResponse(res, 'OK', AuthMessage.LOGOUT_SUCCESS);
   } catch (error) {
