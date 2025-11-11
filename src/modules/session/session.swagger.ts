@@ -98,8 +98,8 @@
  *                 error:
  *                   type: string
  *                   example: Invalid request.
- *       403:
- *         description: Forbidden.
+ *       401:
+ *         description: Unauthorized.
  *         content:
  *           application/json:
  *             schema:
@@ -107,7 +107,7 @@
  *               properties:
  *                 status_code:
  *                   type: number
- *                   example: 403
+ *                   example: 401
  *                 error:
  *                   type: string
  *                   example: Access denied. Authentication is required.
@@ -146,8 +146,8 @@
  *                 error:
  *                   type: string
  *                   example: Invalid request.
- *       403:
- *         description: Forbidden.
+ *       401:
+ *         description: Unauthorized.
  *         content:
  *           application/json:
  *             schema:
@@ -155,7 +155,7 @@
  *               properties:
  *                 status_code:
  *                   type: number
- *                   example: 403
+ *                   example: 401
  *                 error:
  *                   type: string
  *                   example: Access denied. Authentication is required.
@@ -206,8 +206,8 @@
  *                 error:
  *                   type: string
  *                   example: Invalid request.
- *       403:
- *         description: Forbidden.
+ *       401:
+ *         description: Unauthorized.
  *         content:
  *           application/json:
  *             schema:
@@ -215,7 +215,7 @@
  *               properties:
  *                 status_code:
  *                   type: number
- *                   example: 403
+ *                   example: 401
  *                 error:
  *                   type: string
  *                   example: Access denied. Authentication is required.
@@ -232,6 +232,19 @@
  *                 error:
  *                   type: string
  *                   example: Session not found.
+ *       409:
+ *         description: Conflict.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status_code:
+ *                   type: number
+ *                   example: 409
+ *                 error:
+ *                   type: string
+ *                   example: Cannot delete active session.
  *
  * /session/clear:
  *   delete:
@@ -259,8 +272,8 @@
  *                 error:
  *                   type: string
  *                   example: Invalid request.
- *       403:
- *         description: Forbidden.
+ *       401:
+ *         description: Unauthorized.
  *         content:
  *           application/json:
  *             schema:
@@ -268,9 +281,8 @@
  *               properties:
  *                 status_code:
  *                   type: number
- *                   example: 403
+ *                   example: 401
  *                 error:
  *                   type: string
  *                   example: Access denied. Authentication is required.
- *
  */

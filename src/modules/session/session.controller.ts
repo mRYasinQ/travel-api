@@ -39,12 +39,14 @@ const getSessionHandler: RequestHandler = async (req, res, next) => {
 
 const deleteSessionHandler: RequestHandler = async (req, res, next) => {
   try {
-    const userId = req.user?.id;
-    if (!userId) throw new AppError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
+    const user = req.user;
+    if (!user) throw new AppError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
 
     const { id } = req.validatedParams as SessionParam;
 
-    await deleteSession(id, userId);
+    if (id === user.activeSession.id) throw new AppError(SessionMessage.DELETE_ACTIVE_SESSION, 'CONFLICT');
+
+    await deleteSession(id, user.id);
 
     return createResponse(res, 'OK', SessionMessage.SESSION_DELETED);
   } catch (error) {
@@ -54,10 +56,10 @@ const deleteSessionHandler: RequestHandler = async (req, res, next) => {
 
 const clearSessionsHandler: RequestHandler = async (req, res, next) => {
   try {
-    const userId = req.user?.id;
-    if (!userId) throw new AppError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
+    const user = req.user;
+    if (!user) throw new AppError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
 
-    await clearSessions(userId);
+    await clearSessions(user.id, user.activeSession.id);
 
     return createResponse(res, 'OK', SessionMessage.SESSIONS_CLEARED);
   } catch (error) {

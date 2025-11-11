@@ -494,17 +494,4 @@
  *                 error:
  *                   type: string
  *                   example: Access denied. Authentication is required.
- *       403:
- *         description: Forbidden.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status_code:
- *                   type: number
- *                   example: 403
- *                 error:
- *                   type: string
- *                   example: User inactive.
  */

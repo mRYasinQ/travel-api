@@ -34,7 +34,6 @@ const checkAuth = (isOptional: boolean = false): RequestHandler => {
       }
 
       if (expireAt < new Date()) throw new AppError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
-      if (!user.isActive) throw new AppError(CommonMessage.USER_INACTIVE, 'FORBIDDEN');
 
       req.user = { ...user, activeSession: { id, token } };
 

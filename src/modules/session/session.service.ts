@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, ne } from 'drizzle-orm';
 
 import db from '../../configs/db.config';
 
@@ -35,8 +35,8 @@ const deleteSession = async (id: number, userId: number) => {
   return;
 };
 
-const clearSessions = async (userId: number) => {
-  await db.delete(sessionEntity).where(eq(sessionEntity.userId, userId));
+const clearSessions = async (userId: number, activeSessionId: number) => {
+  await db.delete(sessionEntity).where(and(eq(sessionEntity.userId, userId), ne(sessionEntity.id, activeSessionId)));
 
   return;
 };
