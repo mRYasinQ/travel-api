@@ -5,19 +5,18 @@ import mail from '../../configs/mail.config';
 
 import getErrorMessage from './getErrorMessage';
 
-const sendMail = async (options: SendMailOptions) => {
+const sendMail = async (options: SendMailOptions, logOnError: boolean = false) => {
   try {
     await mail.sendMail(options);
     return true;
-  } catch {
+  } catch (error) {
+    if (logOnError) logger.error(`Failed to send email, Error: ${getErrorMessage(error)}`);
     return false;
   }
 };
 
 const sendMailSync = (options: SendMailOptions) => {
-  mail.sendMail(options).catch((error) => {
-    logger.error(`Failed to send email, Error: ${getErrorMessage(error)}`);
-  });
+  void sendMail(options, true);
 };
 
 export { sendMail, sendMailSync };
