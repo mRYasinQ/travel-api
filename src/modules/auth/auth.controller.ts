@@ -106,10 +106,10 @@ const recoverVerifyOtpHandler: RequestHandler = async (req, res, next) => {
 
 const logoutHandler: RequestHandler = async (req, res, next) => {
   try {
-    const activeSession = req.activeSession;
-    if (!activeSession) throw new AppError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
+    const activeSessionId = req.user?.activeSession.id;
+    if (!activeSessionId) throw new AppError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
 
-    await logoutUser(activeSession.id);
+    await logoutUser(activeSessionId);
 
     return createResponse(res, 'OK', AuthMessage.LOGOUT_SUCCESS);
   } catch (error) {

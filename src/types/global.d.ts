@@ -4,8 +4,8 @@ import type { IResult } from 'ua-parser-js';
 import sessionEntity from '../modules/session/session.entity';
 import userEntity from '../modules/user/user.entity';
 
-type User = Omit<typeof userEntity.$inferSelect, 'password'>;
 type Session = Pick<typeof sessionEntity.$inferSelect, 'id' | 'token'>;
+type User = Omit<typeof userEntity.$inferSelect, 'password'> & { activeSession: Session };
 
 declare global {
   namespace NodeJS {
@@ -43,7 +43,6 @@ declare global {
       validatedParams: unknown;
 
       user?: User;
-      activeSession?: Session;
       userAgent?: IResult;
     }
   }
