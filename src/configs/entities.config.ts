@@ -1,11 +1,14 @@
 import sessionEntity, { sessionRelations } from '../modules/session/session.entity';
 import userEntity, { userRelations } from '../modules/user/user.entity';
 
-const entities = {
+const tables = {
   user: userEntity,
-  userRelations,
   session: sessionEntity,
-  sessionRelations,
 };
 
+const relations = { userRelations, sessionRelations };
+
+const entities = { ...tables, ...relations };
+
+export { tables, relations };
 export default entities;
