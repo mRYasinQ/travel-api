@@ -15,7 +15,13 @@ import sessionEntity from '../session/session.entity';
 import userEntity from '../user/user.entity';
 
 import AuthMessage from './auth.message';
-import type { OtpData, RecoverOtpKey, RegisterOtpKey } from './types';
+
+type RegisterOtpKey = `register:otp:${string}`;
+type RecoverOtpKey = `recover:otp:${string}`;
+type OtpData = {
+  otp: string;
+  verified: boolean;
+};
 
 const { TOKEN_EXPIRE, OTP_EXPIRE, OTP_CACHE } = process.env;
 
