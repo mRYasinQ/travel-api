@@ -22,6 +22,7 @@ declare global {
       DB_PASSWORD: string;
       DB_NAME: string;
       DB_CONNECTION_LIMIT: string;
+      DB_CACHE_QUERY_DEFAULT: StringValue;
 
       MAIL_SECURE: '0' | '1';
       MAIL_HOST: string;
