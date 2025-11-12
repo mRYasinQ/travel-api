@@ -8,7 +8,17 @@ import sessionEntity from './session.entity';
 import SessionMessage from './session.message';
 
 const getSessions = async (userId: number) => {
-  const sessions = await db.select().from(sessionEntity).where(eq(sessionEntity.userId, userId)).$withCache();
+  const sessions = await db
+    .select({
+      id: sessionEntity.id,
+      browser: sessionEntity.browser,
+      os: sessionEntity.os,
+      createdAt: sessionEntity.createdAt,
+      expireAt: sessionEntity.expireAt,
+    })
+    .from(sessionEntity)
+    .where(eq(sessionEntity.userId, userId))
+    .$withCache();
 
   return sessions;
 };
