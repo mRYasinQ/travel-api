@@ -29,6 +29,13 @@
  *           type: boolean
  *           example: false
  *
+ *     ClearSessions:
+ *       type: object
+ *       properties:
+ *         clear_active:
+ *           type: boolean
+ *           example: false
+ *
  *     SessionsResponse:
  *       type: object
  *       properties:
@@ -88,6 +95,55 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/SessionsResponse'
+ *       400:
+ *         description: Bad Request.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status_code:
+ *                   type: number
+ *                   example: 400
+ *                 error:
+ *                   type: string
+ *                   example: Invalid request.
+ *       401:
+ *         description: Unauthorized.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status_code:
+ *                   type: number
+ *                   example: 401
+ *                 error:
+ *                   type: string
+ *                   example: Access denied. Authentication is required.
+ *
+ * /session/clear:
+ *   post:
+ *     summary: Clear all sessions.
+ *     tags: [Session]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ClearSessions'
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             $ref: '#/components/schemas/ClearSessions'
+ *     responses:
+ *       200:
+ *         description: Success.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ClearSessionResponse'
  *       400:
  *         description: Bad Request.
  *         content:
@@ -248,44 +304,4 @@
  *                 error:
  *                   type: string
  *                   example: Cannot delete active session.
- *
- * /session/clear:
- *   delete:
- *     summary: Clear all sessions.
- *     tags: [Session]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Success.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ClearSessionResponse'
- *       400:
- *         description: Bad Request.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status_code:
- *                   type: number
- *                   example: 400
- *                 error:
- *                   type: string
- *                   example: Invalid request.
- *       401:
- *         description: Unauthorized.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status_code:
- *                   type: number
- *                   example: 401
- *                 error:
- *                   type: string
- *                   example: Access denied. Authentication is required.
  */

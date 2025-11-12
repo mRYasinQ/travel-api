@@ -35,8 +35,11 @@ const deleteSession = async (id: number, userId: number) => {
   return;
 };
 
-const clearSessions = async (userId: number, activeSessionId: number) => {
-  await db.delete(sessionEntity).where(and(eq(sessionEntity.userId, userId), ne(sessionEntity.id, activeSessionId)));
+const clearSessions = async (userId: number, activeSessionId: number, clearActive?: boolean) => {
+  const conditions = [eq(sessionEntity.userId, userId)];
+  if (!clearActive) conditions.push(ne(sessionEntity.id, activeSessionId));
+
+  await db.delete(sessionEntity).where(and(...conditions));
 
   return;
 };

@@ -6,7 +6,7 @@ import createResponse from '../../common/utils/createResponse';
 
 import { toSessionResponse, toSessionsResponse } from './session.mapper';
 import SessionMessage from './session.message';
-import type { SessionParam } from './session.schema';
+import type { ClearSessions, SessionParam } from './session.schema';
 import { clearSessions, deleteSession, getSession, getSessions } from './session.service';
 
 const getSessionsHandler: RequestHandler = async (req, res, next) => {
@@ -69,7 +69,9 @@ const clearSessionsHandler: RequestHandler = async (req, res, next) => {
     const user = req.user;
     if (!user) throw new AppError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
 
-    await clearSessions(user.id, user.activeSession.id);
+    const { clear_active } = req.validatedBody as ClearSessions;
+
+    await clearSessions(user.id, user.activeSession.id, clear_active);
 
     return createResponse(res, 'OK', SessionMessage.SESSIONS_CLEARED);
   } catch (error) {
