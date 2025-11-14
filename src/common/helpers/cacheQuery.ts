@@ -6,6 +6,11 @@ import { tables } from '../../configs/entities.config';
 
 type Tables = keyof typeof tables;
 type QueryFn<T> = () => Promise<T>;
+type CacheQueryConfig = {
+  tablesToInvalidate?: Tables[];
+  isTag?: boolean;
+  cacheConfig?: CacheConfig;
+};
 
 const { DB_CACHE_QUERY_DEFAULT } = process.env;
 
@@ -13,17 +18,22 @@ const cacheManager = redisCache();
 
 const cacheQuery = async <T>(
   cacheKey: string,
-  tablesToInvalidate: Tables[],
   queryFn: QueryFn<T>,
-  config: CacheConfig = { px: ms(DB_CACHE_QUERY_DEFAULT) },
-  isTag: boolean = false,
+  { tablesToInvalidate, isTag, cacheConfig }: CacheQueryConfig = {
+    isTag: false,
+    cacheConfig: { px: ms(DB_CACHE_QUERY_DEFAULT) },
+  },
 ): Promise<T> => {
-  const cachedResult = await cacheManager.get(cacheKey, tablesToInvalidate, isTag);
+  const tables = tablesToInvalidate ?? [];
+  const isAutoInvalidate = tables.length > 0;
+
+  const cachedResult = await cacheManager.get(cacheKey, tables, isTag, isAutoInvalidate);
   if (cachedResult !== undefined) return cachedResult as T;
 
   const result = await queryFn();
+  if (result === undefined) return result;
 
-  await cacheManager.put(cacheKey, result, tablesToInvalidate, isTag, config);
+  await cacheManager.put(cacheKey, result, tables, isTag, cacheConfig);
 
   return result;
 };
