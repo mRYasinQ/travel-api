@@ -1,8 +1,8 @@
 import type { RequestHandler } from 'express';
 
 import CommonMessage from '../../common/constants/Message';
+import createResponse from '../../common/helpers/createResponse';
 import AppError from '../../common/utils/AppError';
-import createResponse from '../../common/utils/createResponse';
 
 import AuthMessage from './auth.message';
 import type { Login, Recover, Register, SendOtp, VerifyOtp } from './auth.schema';

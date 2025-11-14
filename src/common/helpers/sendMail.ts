@@ -3,7 +3,7 @@ import type { SendMailOptions } from 'nodemailer';
 import logger from '../../configs/logger.config';
 import mail from '../../configs/mail.config';
 
-import getErrorMessage from './getErrorMessage';
+import getErrorMessage from '../utils/getErrorMessage';
 
 const sendMail = async (options: SendMailOptions, logOnError: boolean = false) => {
   try {

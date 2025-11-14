@@ -5,12 +5,12 @@ import db from '../../configs/db.config';
 import redisClient from '../../configs/redis.config';
 
 import CommonMessage from '../../common/constants/Message';
+import formatMessage from '../../common/helpers/formatMessage';
+import { comparePassword, hashPassword } from '../../common/helpers/password';
+import { execAndExtract } from '../../common/helpers/redis';
+import { sendMailSync } from '../../common/helpers/sendMail';
 import AppError from '../../common/utils/AppError';
-import formatMessage from '../../common/utils/formatMessage';
-import { comparePassword, hashPassword } from '../../common/utils/password';
 import { generateOtp, generateToken } from '../../common/utils/random';
-import { execAndExtract } from '../../common/utils/redis';
-import { sendMailSync } from '../../common/utils/sendMail';
 
 import sessionEntity from '../session/session.entity';
 import userEntity from '../user/user.entity';
