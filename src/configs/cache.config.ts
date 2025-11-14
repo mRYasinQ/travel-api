@@ -7,9 +7,42 @@ import redisClient from './redis.config';
 
 type RedisClient = typeof redisClient;
 type RedisMode = 'NX' | 'XX' | 'GT' | 'LT' | undefined;
-type RedisCacheConfig = CacheConfig & {
-  global?: boolean;
-};
+type RedisCacheConfig = CacheConfig & { global?: boolean };
+type Expirations = Record<string, () => Promise<unknown>>;
+
+const getByTagLua = `
+local tagsMapKey = KEYS[1]
+local tag = ARGV[1]
+local compositeTableName = redis.call('HGET', tagsMapKey, tag)
+if not compositeTableName then return nil end
+local value = redis.call('HGET', compositeTableName, tag)
+return value
+`;
+
+const onMutateLua = `
+local tagsMapKey = KEYS[1]
+local tags = ARGV
+local tables = {}
+for i = 2, #KEYS do tables[#tables+1] = KEYS[i] end
+if #tags > 0 then
+  for _, tag in ipairs(tags) do
+    if tag and tag ~= '' then
+      local compositeTableName = redis.call('HGET', tagsMapKey, tag)
+      if compositeTableName then redis.call('HDEL', compositeTableName, tag) end
+    end
+  end
+  redis.call('HDEL', tagsMapKey, unpack(tags))
+end
+if #tables > 0 then
+  local compositeTableNames = redis.call('SUNION', unpack(tables))
+  local keysToDelete = {}
+  for _, compositeTableName in ipairs(compositeTableNames) do
+    keysToDelete[#keysToDelete+1] = compositeTableName
+  end
+  for _, table in ipairs(tables) do keysToDelete[#keysToDelete+1] = table end
+  redis.call('DEL', unpack(keysToDelete))
+end
+`;
 
 class RedisCache extends Cache {
   static readonly entityKind: string = 'RedisCache';
@@ -42,15 +75,15 @@ class RedisCache extends Cache {
     }
 
     if (isTag) {
-      const compositeTableName = await this.redis.hGet(RedisCache.tagsMapKey, key);
-      if (!compositeTableName) return undefined;
+      const result = await this.redis.eval(getByTagLua, {
+        keys: [RedisCache.tagsMapKey],
+        arguments: [key],
+      });
 
-      const value = await this.redis.hGet(compositeTableName, key);
-      return value ? JSON.parse(value) : undefined;
+      return result ? JSON.parse(String(result)) : undefined;
     }
 
     const compositeKey = this.getCompositeKey(tables);
-
     const result = await this.redis.hGet(compositeKey, key);
     return result ? JSON.parse(result) : undefined;
   }
@@ -64,7 +97,7 @@ class RedisCache extends Cache {
   ): Promise<void> {
     const isAutoInvalidate = tables.length !== 0;
     const mergedConfig = { ...this.config, ...config };
-    const serializedResponse = JSON.stringify(response);
+    const serialized = JSON.stringify(response);
 
     if (!isAutoInvalidate) {
       if (isTag) {
@@ -72,15 +105,14 @@ class RedisCache extends Cache {
         await this.setHashFieldExpiration(RedisCache.tagsMapKey, key, mergedConfig);
       }
 
-      await this.redis.hSet(RedisCache.nonAutoInvalidateTablePrefix, key, serializedResponse);
+      await this.redis.hSet(RedisCache.nonAutoInvalidateTablePrefix, key, serialized);
       await this.setHashFieldExpiration(RedisCache.nonAutoInvalidateTablePrefix, key, mergedConfig);
-
       return;
     }
 
     const compositeKey = this.getCompositeKey(tables);
 
-    await this.redis.hSet(compositeKey, key, serializedResponse);
+    await this.redis.hSet(compositeKey, key, serialized);
     await this.setHashFieldExpiration(compositeKey, key, mergedConfig);
 
     if (isTag) {
@@ -93,7 +125,7 @@ class RedisCache extends Cache {
     }
   }
 
-  private async setHashFieldExpiration(hashKey: string, field: string, config?: CacheConfig): Promise<void> {
+  private async setHashFieldExpiration(hashKey: string, field: string, config?: CacheConfig) {
     if (!config) {
       await this.redis.hExpire(hashKey, field, 1800);
       return;
@@ -103,54 +135,36 @@ class RedisCache extends Cache {
 
     const mode = config.hexOptions?.toUpperCase() as RedisMode;
 
-    if (config.ex !== undefined) {
-      await this.redis.hExpire(hashKey, field, config.ex, mode);
-    } else if (config.px !== undefined) {
-      await this.redis.hpExpire(hashKey, field, config.px, mode);
-    } else if (config.exat !== undefined) {
-      await this.redis.hExpireAt(hashKey, field, config.exat, mode);
-    } else if (config.pxat !== undefined) {
-      await this.redis.hpExpireAt(hashKey, field, config.pxat, mode);
-    }
+    const expirations: Expirations = {
+      ex: () => this.redis.hExpire(hashKey, field, config.ex!, mode),
+      px: () => this.redis.hpExpire(hashKey, field, config.px!, mode),
+      exat: () => this.redis.hExpireAt(hashKey, field, config.exat!, mode),
+      pxat: () => this.redis.hpExpireAt(hashKey, field, config.pxat!, mode),
+    };
+
+    const key = Object.keys(expirations).find((key) => config[key as keyof CacheConfig] !== undefined);
+    if (!key) return;
+
+    const value = expirations[key];
+    await value();
   }
 
   override async onMutate(params: MutationOption): Promise<void> {
     const tags = Array.isArray(params.tags) ? params.tags : params.tags ? [params.tags] : [];
     const tables = Array.isArray(params.tables) ? params.tables : params.tables ? [params.tables] : [];
+    const tableNames = tables.map((t) => (typeof t === 'string' ? t : getTableName(t)));
 
-    const tableNames: string[] = tables.map((table) => {
-      if (typeof table === 'string') return table;
-      return getTableName(table);
+    const compositeTableSets = tableNames.map((t) => this.addTablePrefix(t));
+
+    await this.redis.eval(onMutateLua, {
+      keys: [RedisCache.tagsMapKey, ...compositeTableSets],
+      arguments: tags,
     });
-
-    if (tags.length > 0) {
-      for (const tag of tags) {
-        if (tag) {
-          const compositeTableName = await this.redis.hGet(RedisCache.tagsMapKey, tag);
-          if (compositeTableName) await this.redis.hDel(compositeTableName, tag);
-        }
-      }
-      await this.redis.hDel(RedisCache.tagsMapKey, tags);
-    }
-
-    if (tableNames.length > 0) {
-      const compositeTableSets = tableNames.map((table) => this.addTablePrefix(table));
-      const keysToDelete: string[] = [];
-
-      for (const setKey of compositeTableSets) {
-        const compositeTableNames = await this.redis.sMembers(setKey);
-        keysToDelete.push(...compositeTableNames);
-      }
-
-      if (keysToDelete.length > 0) await this.redis.del([...keysToDelete, ...compositeTableSets]);
-    }
   }
 
-  private addTablePrefix = (table: string): string => `${RedisCache.compositeTableSetPrefix}${table}`;
+  private addTablePrefix = (table: string) => `${RedisCache.compositeTableSetPrefix}${table}`;
 
-  private getCompositeKey = (tables: string[]): string => {
-    return `${RedisCache.compositeTablePrefix}${tables.sort().join(',')}`;
-  };
+  private getCompositeKey = (tables: string[]) => `${RedisCache.compositeTablePrefix}${tables.sort().join(',')}`;
 }
 
 const redisCache = (config?: RedisCacheConfig) => new RedisCache(redisClient, config);
