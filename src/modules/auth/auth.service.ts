@@ -9,6 +9,7 @@ import AppError from '../../common/utils/AppError';
 import formatMessage from '../../common/utils/formatMessage';
 import { comparePassword, hashPassword } from '../../common/utils/password';
 import { generateOtp, generateToken } from '../../common/utils/random';
+import { execAndExtract } from '../../common/utils/redis';
 import { sendMailSync } from '../../common/utils/sendMail';
 
 import sessionEntity from '../session/session.entity';
@@ -61,7 +62,6 @@ const loginUser = async (email: string, password: string, browser: string, os: s
 
 const registerUser = async (email: string, password: string, otp: string) => {
   const key: RegisterOtpKey = `register:otp:${email}`;
-
   const otpResult = await redisClient.get(key);
   if (!otpResult) throw new AppError(AuthMessage.INVALID_OTP, 'BAD_REQUEST');
 
@@ -87,8 +87,7 @@ const registerSendOtp = async (email: string) => {
   if (user) throw new AppError(AuthMessage.EMAIL_ALREADY_ASSOCIATED, 'BAD_REQUEST');
 
   const key: RegisterOtpKey = `register:otp:${email}`;
-
-  const [otpData, ttl] = await redisClient.multi().get(key).ttl(key).execTyped();
+  const [otpData, ttl] = await execAndExtract<[string, number]>(redisClient.multi().get(key).ttl(key));
   if (otpData && ttl > 0) {
     const { verified }: OtpData = JSON.parse(otpData);
 
@@ -101,7 +100,7 @@ const registerSendOtp = async (email: string) => {
   const value = JSON.stringify({ otp, verified: false });
   const expiresIn = ms(OTP_EXPIRE);
 
-  await redisClient.set(key, value, { expiration: { type: 'PX', value: expiresIn } });
+  await redisClient.set(key, value, 'PX', expiresIn);
 
   sendMailSync({
     to: email,
@@ -125,14 +124,13 @@ const registerVerifyOtp = async (email: string, otp: string) => {
   const value = JSON.stringify({ otp, verified: true });
   const expiresIn = ms(OTP_CACHE);
 
-  await redisClient.set(key, value, { expiration: { type: 'PX', value: expiresIn } });
+  await redisClient.set(key, value, 'PX', expiresIn);
 
   return;
 };
 
 const recoverUser = async (email: string, password: string, otp: string) => {
   const key: RecoverOtpKey = `recover:otp:${email}`;
-
   const otpResult = await redisClient.get(key);
   if (!otpResult) throw new AppError(AuthMessage.INVALID_OTP, 'BAD_REQUEST');
 
@@ -155,8 +153,7 @@ const recoverSendOtp = async (email: string) => {
   if (!user) throw new AppError(AuthMessage.EMAIL_INCORRECT, 'BAD_REQUEST');
 
   const key: RecoverOtpKey = `recover:otp:${email}`;
-
-  const [otpData, ttl] = await redisClient.multi().get(key).ttl(key).execTyped();
+  const [otpData, ttl] = await execAndExtract<[string, number]>(redisClient.multi().get(key).ttl(key));
   if (otpData && ttl > 0) {
     const { verified }: OtpData = JSON.parse(otpData);
 
@@ -169,7 +166,7 @@ const recoverSendOtp = async (email: string) => {
   const value = JSON.stringify({ otp, verified: false });
   const expiresIn = ms(OTP_EXPIRE);
 
-  await redisClient.set(key, value, { expiration: { type: 'PX', value: expiresIn } });
+  await redisClient.set(key, value, 'PX', expiresIn);
 
   sendMailSync({
     to: email,
@@ -193,14 +190,13 @@ const recoverVerifyOtp = async (email: string, otp: string) => {
   const value = JSON.stringify({ otp, verified: true });
   const expiresIn = ms(OTP_CACHE);
 
-  await redisClient.set(key, value, { expiration: { type: 'PX', value: expiresIn } });
+  await redisClient.set(key, value, 'PX', expiresIn);
 
   return;
 };
 
 const logoutUser = async (sessionId: number) => {
   await db.delete(sessionEntity).where(eq(sessionEntity.id, sessionId));
-
   return;
 };
 

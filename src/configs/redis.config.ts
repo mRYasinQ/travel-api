@@ -1,4 +1,4 @@
-import { createClient } from 'redis';
+import Redis from 'ioredis';
 
 import getErrorMessage from '../common/utils/getErrorMessage';
 
@@ -6,11 +6,11 @@ import logger from './logger.config';
 
 const REDIS_URL = process.env.REDIS_URL;
 
-const redisClient = createClient({ url: REDIS_URL });
+const redisClient = new Redis(REDIS_URL);
 
 const connectToRedis = async () => {
   try {
-    await redisClient.connect();
+    await redisClient.ping();
 
     logger.info('Server connected to Redis.');
   } catch (error) {
