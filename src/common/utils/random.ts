@@ -1,14 +1,16 @@
-import crypto from 'node:crypto';
+import { createHash, randomBytes, randomInt } from 'node:crypto';
+
+const md5 = (data: unknown) => createHash('md5').update(String(data)).digest('hex');
 
 const generateOtp = (length: number = 5): number => {
   const min = 10 ** (length - 1);
   const max = 10 ** length - 1;
 
-  return crypto.randomInt(min, max);
+  return randomInt(min, max);
 };
 
 const generateToken = (tokenSize: number = 32) => {
-  const buffer = crypto.randomBytes(tokenSize);
+  const buffer = randomBytes(tokenSize);
   const token = buffer.toString('base64url');
 
   return token;
@@ -27,4 +29,4 @@ const generateRandomString = (stringLength: number = 7) => {
   return result;
 };
 
-export { generateOtp, generateToken, generateRandomString };
+export { md5, generateOtp, generateToken, generateRandomString };
