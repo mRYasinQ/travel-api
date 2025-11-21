@@ -34,6 +34,8 @@ declare global {
       OTP_EXPIRE: StringValue;
       OTP_CACHE: StringValue;
       REQUEST_TIMEOUT: string;
+
+      ACTIVITY_FILE_SIZE: string;
     }
   }
 
