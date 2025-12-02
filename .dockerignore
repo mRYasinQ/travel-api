@@ -1,0 +1,14 @@
+.env*
+.prettier*
+.gitignore
+
+eslint.config.mjs
+Dockerfile
+
+app.log
+
+/.husky
+/node_modules
+/public/uploads
+
+/dist

@@ -1,6 +1,9 @@
 .env*
 !.env.example
 
+app.log
+
 /node_modules
+/public/uploads
 
 /dist

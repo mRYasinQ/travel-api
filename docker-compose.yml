@@ -1,0 +1,36 @@
+name: travel-api
+
+services:
+  app:
+    build: .
+    depends_on:
+      - mysql
+      - redis
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    volumes:
+      - uploads_data:/app/public/uploads
+    command: ./run.sh
+  
+  mysql:
+    image: mysql:8.0.44-debian
+    ports:
+      - 127.0.0.1:3306:3306
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+
+  redis:
+    image: redis:8.4.0-alpine
+    ports:
+      - 127.0.0.1:6379:6379
+    volumes:
+      - redis_data:/data
+
+volumes:
+  uploads_data:
+  mysql_data:
+  redis_data:

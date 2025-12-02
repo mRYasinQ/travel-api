@@ -1,0 +1,43 @@
+name: travel-api-dev
+
+services:
+  mysql:
+    image: mysql:8.0.44-debian
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+
+  phpmyadmin:
+    image: phpmyadmin:5.2.3
+    depends_on:
+      - mysql
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOST: mysql
+  
+  redis:
+    image: redis/redis-stack:7.4.0-v8
+    ports:
+      - 6379:6379
+      - 8001:8001
+    volumes:
+      - redis_data:/data
+
+  smtp4dev:
+    image: rnwood/smtp4dev:v3
+    ports:
+      - 5000:80
+      - 5001:25
+    volumes:
+      - smtp4dev_data:/data
+
+volumes:
+  mysql_data:
+  redis_data:
+  smtp4dev_data:
