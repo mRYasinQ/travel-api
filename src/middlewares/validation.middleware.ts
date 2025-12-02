@@ -3,16 +3,13 @@ import type { ZodType } from 'zod';
 
 import AppError from '../common/utils/AppError';
 
-type DataSource = 'body' | 'query' | 'params';
-type ValidatedDest = 'validatedBody' | 'validatedQuery' | 'validatedParams';
-
-const validatedDest: Record<DataSource, ValidatedDest> = {
+const validatedDest = {
   body: 'validatedBody',
   query: 'validatedQuery',
   params: 'validatedParams',
-};
+} as const;
 
-const createValidator = (schema: ZodType, source: DataSource): RequestHandler => {
+const createValidator = (schema: ZodType, source: keyof typeof validatedDest): RequestHandler => {
   return async (req, _res, next) => {
     try {
       const data = req[source];
