@@ -9,11 +9,11 @@ const generateOtp = (length: number = 5): number => {
   return randomInt(min, max);
 };
 
-const generateToken = (tokenSize: number = 32) => {
-  const buffer = randomBytes(tokenSize);
-  const token = buffer.toString('base64url');
+const generateRandomBytes = (size: number = 32, encoding: BufferEncoding = 'base64url') => {
+  const buffer = randomBytes(size);
+  const text = buffer.toString(encoding);
 
-  return token;
+  return text;
 };
 
 const generateRandomString = (stringLength: number = 7) => {
@@ -29,4 +29,4 @@ const generateRandomString = (stringLength: number = 7) => {
   return result;
 };
 
-export { md5, generateOtp, generateToken, generateRandomString };
+export { md5, generateOtp, generateRandomBytes, generateRandomString };

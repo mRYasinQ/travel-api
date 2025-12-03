@@ -10,7 +10,7 @@ import { comparePassword, hashPassword } from '../../common/helpers/password';
 import { execAndExtract } from '../../common/helpers/redis';
 import { sendMailSync } from '../../common/helpers/sendMail';
 import AppError from '../../common/utils/AppError';
-import { generateOtp, generateToken } from '../../common/utils/random';
+import { generateOtp, generateRandomBytes } from '../../common/utils/random';
 
 import sessionEntity from '../session/session.entity';
 import userEntity from '../user/user.entity';
@@ -45,7 +45,7 @@ const loginUser = async (email: string, password: string, browser: string, os: s
 
   if (!isActive) throw new AppError(CommonMessage.USER_INACTIVE, 'FORBIDDEN');
 
-  const token = generateToken();
+  const token = generateRandomBytes();
   const tokenExpire = Date.now() + ms(TOKEN_EXPIRE);
   const tokenExpireDate = new Date(tokenExpire);
 

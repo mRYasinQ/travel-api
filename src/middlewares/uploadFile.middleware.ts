@@ -7,7 +7,7 @@ import CommonMessage from '../common/constants/Message';
 import AppError from '../common/utils/AppError';
 
 type UploadFileConfig = StorageConfig & {
-  allowedFieldName: string;
+  allowedFieldName: string | string[];
   allowedMimeTypes: string[];
   size?: string;
 };
@@ -24,7 +24,9 @@ const uploadFile = ({
     fileFilter: (_req, file, cb) => {
       const { fieldname, mimetype } = file;
 
-      if (allowedFieldName !== fieldname) return cb(new AppError(CommonMessage.INVALID_FILE_FIELD, 'BAD_REQUEST'));
+      const allowedFields = Array.isArray(allowedFieldName) ? allowedFieldName : [allowedFieldName];
+      const isAllowedFields = allowedFields.includes(fieldname);
+      if (!isAllowedFields) return cb(new AppError(CommonMessage.INVALID_FILE_FIELD, 'BAD_REQUEST'));
 
       const isAllowedMimType = allowedMimeTypes.includes(mimetype);
       if (!isAllowedMimType) return cb(new AppError(CommonMessage.INVALID_FILE_TYPE, 'BAD_REQUEST'));

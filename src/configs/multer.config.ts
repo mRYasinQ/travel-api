@@ -2,7 +2,7 @@ import { diskStorage, type StorageEngine } from 'multer';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import { md5 } from '../common/utils/random';
+import { generateRandomBytes, md5 } from '../common/utils/random';
 
 type StorageConfig = {
   basePath: string;
@@ -26,7 +26,7 @@ const createStorage = ({ basePath, filePrefix }: StorageConfig): StorageEngine =
       const { originalname } = file;
 
       const extName = path.extname(originalname);
-      const uniqueFileName = (md5(new Date()) + extName).toLowerCase();
+      const uniqueFileName = (md5(new Date() + generateRandomBytes(16, 'hex')) + extName).toLowerCase();
       const fileName = filePrefix ? `${filePrefix}_${uniqueFileName}` : uniqueFileName;
 
       return cb(null, fileName);

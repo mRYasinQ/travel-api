@@ -1,8 +1,10 @@
 import type { ErrorRequestHandler, RequestHandler } from 'express';
+import { MulterError } from 'multer';
 
 import logger from '../../configs/logger.config';
 
 import type { HttpStatusCodeKeys } from '../../common/constants/HttpStatusCode';
+import cleanupFiles from '../../common/helpers/cleanupFiles';
 import createResponse from '../../common/helpers/createResponse';
 import formatMessage from '../../common/helpers/formatMessage';
 import AppError from '../../common/utils/AppError';
@@ -29,7 +31,7 @@ const requestTimeoutHandler: ErrorRequestHandler = (err, req, res, next) => {
   return next(err);
 };
 
-const appErrorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
+const appErrorHandler: ErrorRequestHandler = async (err, req, res, _next) => {
   let status: HttpStatusCodeKeys = 'INTERNAL_SERVER_ERROR';
   let message: string = ExceptionMessage.INTERNAL_SERVER;
   let isOperationalError: boolean = false;
@@ -41,6 +43,21 @@ const appErrorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
       isOperationalError = true;
     }
   }
+
+  if (err instanceof MulterError) {
+    status = 'BAD_REQUEST';
+    isOperationalError = true;
+
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      message = ExceptionMessage.FILE_LARGE;
+    } else if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+      message = ExceptionMessage.UNEXPECTED_FILE;
+    } else {
+      message = ExceptionMessage.FILE_UPLOAD_FAILED;
+    }
+  }
+
+  void cleanupFiles(req);
 
   if (!isOperationalError) logger.error(err);
 
