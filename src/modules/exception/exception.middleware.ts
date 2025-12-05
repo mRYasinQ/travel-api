@@ -4,9 +4,9 @@ import { MulterError } from 'multer';
 import logger from '../../configs/logger.config';
 
 import type { HttpStatusCodeKeys } from '../../common/constants/HttpStatusCode';
-import cleanupFiles from '../../common/helpers/cleanupFiles';
 import createResponse from '../../common/helpers/createResponse';
 import formatMessage from '../../common/helpers/formatMessage';
+import { cleanupFiles } from '../../common/helpers/upload';
 import AppError from '../../common/utils/AppError';
 
 import ExceptionMessage from './exception.message';
@@ -23,12 +23,13 @@ const notFoundErrorHandler: RequestHandler = (req, res) => {
 
 const requestTimeoutHandler: ErrorRequestHandler = (err, req, res, next) => {
   const isTimedout = req.timedout || err?.code === 'ETIMEDOUT';
-  if (isTimedout) {
-    if (res.headersSent) return;
-    return createResponse(res, 'SERVICE_UNAVAILABLE', ExceptionMessage.SERVICE_UNAVAILABLE, undefined, true);
-  }
+  if (!isTimedout) return next(err);
 
-  return next(err);
+  if (res.headersSent) return;
+
+  const timeoutError = new AppError(ExceptionMessage.SERVICE_UNAVAILABLE, 'SERVICE_UNAVAILABLE');
+
+  return next(timeoutError);
 };
 
 const appErrorHandler: ErrorRequestHandler = async (err, req, res, _next) => {

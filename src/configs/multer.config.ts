@@ -2,6 +2,7 @@ import { diskStorage, type StorageEngine } from 'multer';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+import UploadFolders from '../common/constants/UploadFolders';
 import { generateRandomBytes, md5 } from '../common/utils/random';
 
 type StorageConfig = {
@@ -12,7 +13,7 @@ type StorageConfig = {
 const createStorage = ({ basePath, filePrefix }: StorageConfig): StorageEngine => {
   const storage = diskStorage({
     destination: async (_req, _file, cb) => {
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads', basePath);
+      const uploadDir = path.join(process.cwd(), 'public', UploadFolders.base, basePath);
 
       try {
         await fs.mkdir(uploadDir, { recursive: true });
