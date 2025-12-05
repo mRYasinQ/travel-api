@@ -2,8 +2,9 @@ import { Router } from 'express';
 
 import UploadFolders from '../../common/constants/UploadFolders';
 
+import checkAuth from '../../middlewares/checkAuth.middleware';
 import uploadFile from '../../middlewares/uploadFile.middleware';
-import { validationBody } from '../../middlewares/validation.middleware';
+import { validationBody, validationParams } from '../../middlewares/validation.middleware';
 
 import {
   createActivityHandler,
@@ -11,11 +12,11 @@ import {
   getActivitiesHandler,
   updateActivityHandler,
 } from './activity.controller';
-import { createActivitySchema } from './activity.schema';
+import { activityParamSchema, createActivitySchema, updateActivitySchema } from './activity.schema';
 
 const { ACTIVITY_FILE_SIZE } = process.env;
 const UPLOAD_IMAGE_FILED = 'image';
-const UPLOAD_IMAGE_PREFIX = 'activty';
+const UPLOAD_IMAGE_PREFIX = 'activity';
 
 const uploadActivityImage = uploadFile({
   allowedFieldName: UPLOAD_IMAGE_FILED,
@@ -28,9 +29,16 @@ const uploadActivityImage = uploadFile({
 const activityRouter = Router();
 
 activityRouter.get('/', getActivitiesHandler);
-activityRouter.post('/', uploadActivityImage, validationBody(createActivitySchema), createActivityHandler);
 
-activityRouter.patch('/:id', updateActivityHandler);
-activityRouter.delete('/:id', deleteActivityHandler);
+activityRouter.use(checkAuth());
+activityRouter.post('/', uploadActivityImage, validationBody(createActivitySchema), createActivityHandler);
+activityRouter.patch(
+  '/:id',
+  uploadActivityImage,
+  validationParams(activityParamSchema),
+  validationBody(updateActivitySchema),
+  updateActivityHandler,
+);
+activityRouter.delete('/:id', validationParams(activityParamSchema), deleteActivityHandler);
 
 export default activityRouter;

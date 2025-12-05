@@ -1,9 +1,26 @@
 import { z } from 'zod';
 
-const createActivitySchema = z.object({
+const baseActivitySchema = z.object({
   name: z.string().min(3).max(200),
 });
 
-type CreateActivity = z.infer<typeof createActivitySchema>;
+const createActivitySchema = baseActivitySchema;
 
-export { createActivitySchema, CreateActivity };
+const updateActivitySchema = baseActivitySchema.partial();
+
+const activityParamSchema = z.object({
+  id: z.coerce.number().int().positive(),
+});
+
+type CreateActivity = z.infer<typeof createActivitySchema>;
+type UpdateActivity = z.infer<typeof updateActivitySchema>;
+type ActivityParam = z.infer<typeof activityParamSchema>;
+
+export {
+  createActivitySchema,
+  updateActivitySchema,
+  activityParamSchema,
+  CreateActivity,
+  UpdateActivity,
+  ActivityParam,
+};

@@ -1,8 +1,12 @@
 import type { RequestHandler } from 'express';
 
 import createResponse from '../../common/helpers/createResponse';
+import AppError from '../../common/utils/AppError';
 
 import ActivityMessage from './activity.message';
+import type { ActivityParam, CreateActivity, UpdateActivity } from './activity.schema';
+import { createActivity, deleteActivity, updateActivity } from './activity.service';
+import type { UpdateActivityPayload } from './activity.types';
 
 const getActivitiesHandler: RequestHandler = async (_req, _res, next) => {
   try {
@@ -11,23 +15,47 @@ const getActivitiesHandler: RequestHandler = async (_req, _res, next) => {
   }
 };
 
-const createActivityHandler: RequestHandler = async (_req, res, next) => {
+const createActivityHandler: RequestHandler = async (req, res, next) => {
   try {
-    return createResponse(res, 'CREATED', ActivityMessage.CREATED);
+    const { name } = req.validatedBody as CreateActivity;
+    const fileName = req.file?.filename;
+
+    if (!fileName) throw new AppError(ActivityMessage.IMAGE_REQUIRED, 'BAD_REQUEST');
+
+    await createActivity(name, fileName);
+
+    return createResponse(res, 'CREATED', ActivityMessage.ACTIVITY_CREATED);
   } catch (error) {
     return next(error);
   }
 };
 
-const updateActivityHandler: RequestHandler = async (_req, _res, next) => {
+const updateActivityHandler: RequestHandler = async (req, res, next) => {
   try {
+    const { id } = req.validatedParams as ActivityParam;
+    const body = req.validatedBody as UpdateActivity;
+    const image = req.file?.filename;
+
+    const payload: UpdateActivityPayload = { ...body };
+    if (image) payload.image = image;
+
+    if (Object.keys(payload).length === 0) throw new AppError(ActivityMessage.PAYLOAD_EMPTY, 'BAD_REQUEST');
+
+    await updateActivity(id, payload);
+
+    return createResponse(res, 'OK', ActivityMessage.ACTIVITY_UPDATED);
   } catch (error) {
     return next(error);
   }
 };
 
-const deleteActivityHandler: RequestHandler = async (_req, _res, next) => {
+const deleteActivityHandler: RequestHandler = async (req, res, next) => {
   try {
+    const { id } = req.validatedParams as ActivityParam;
+
+    await deleteActivity(id);
+
+    return createResponse(res, 'OK', ActivityMessage.ACTIVITY_DELETED);
   } catch (error) {
     return next(error);
   }
