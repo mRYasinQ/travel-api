@@ -53,6 +53,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Activity'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
         message:
           type: string
           example: Activities retrieved successfully.
@@ -92,6 +94,9 @@ paths:
     get:
       summary: Get all activities.
       tags: [Activity]
+      parameters:
+        - $ref: '#/components/parameters/PaginationPage'
+        - $ref: '#/components/parameters/PaginationLimit'
       responses:
         200:
           description: Success.

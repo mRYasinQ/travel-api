@@ -2,14 +2,20 @@ import type { RequestHandler } from 'express';
 
 import createResponse from '../../common/helpers/createResponse';
 import AppError from '../../common/utils/AppError';
+import { getPaginationData } from '../../common/utils/pagination';
 
 import ActivityMessage from './activity.message';
 import type { ActivityParam, CreateActivity, UpdateActivity } from './activity.schema';
-import { createActivity, deleteActivity, updateActivity } from './activity.service';
+import { createActivity, deleteActivity, getActivities, updateActivity } from './activity.service';
 import type { UpdateActivityPayload } from './activity.types';
 
-const getActivitiesHandler: RequestHandler = async (_req, _res, next) => {
+const getActivitiesHandler: RequestHandler = async (req, res, next) => {
   try {
+    const paginationData = getPaginationData(req);
+
+    const { data, pagiantion } = await getActivities({ pagination: paginationData });
+
+    return createResponse(res, 'OK', ActivityMessage.ACTIVITY_RETRIEVED, data, false, { pagiantion });
   } catch (error) {
     return next(error);
   }

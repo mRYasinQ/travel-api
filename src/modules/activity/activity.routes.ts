@@ -1,10 +1,11 @@
 import { Router } from 'express';
 
 import UploadFolders from '../../common/constants/UploadFolders';
+import paginationQuerySchema from '../../common/validations/pagination';
 
 import checkAuth from '../../middlewares/checkAuth.middleware';
 import uploadFile from '../../middlewares/uploadFile.middleware';
-import { validationBody, validationParams } from '../../middlewares/validation.middleware';
+import { validationBody, validationParams, validationQuery } from '../../middlewares/validation.middleware';
 
 import {
   createActivityHandler,
@@ -28,7 +29,7 @@ const uploadActivityImage = uploadFile({
 
 const activityRouter = Router();
 
-activityRouter.get('/', getActivitiesHandler);
+activityRouter.get('/', validationQuery(paginationQuerySchema), getActivitiesHandler);
 
 activityRouter.use(checkAuth());
 activityRouter.post('/', uploadActivityImage, validationBody(createActivitySchema), createActivityHandler);

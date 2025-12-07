@@ -1,16 +1,36 @@
-import { eq } from 'drizzle-orm';
+import { count, eq } from 'drizzle-orm';
 
 import db from '../../configs/db.config';
 
 import UploadFolders from '../../common/constants/UploadFolders';
 import { removeFile } from '../../common/helpers/upload';
 import AppError from '../../common/utils/AppError';
+import { createPaginationService, type PaginationData, withPagination } from '../../common/utils/pagination';
 
 import activityEntity from './activity.entity';
 import ActivityMessage from './activity.message';
 import type { UpdateActivityPayload } from './activity.types';
 
-const getActivities = async () => {};
+type ActivitiesPayload = {
+  pagination: PaginationData;
+};
+
+const getActivities = async ({ pagination: { page, limit } }: ActivitiesPayload) => {
+  const query = db.select().from(activityEntity).$withCache();
+  const dynamicQuery = query.$dynamic();
+
+  const countQuery = db.select({ count: count() }).from(activityEntity).$withCache();
+  const dataQuery = withPagination(dynamicQuery, page, limit);
+
+  const [[{ count: total }], data] = await Promise.all([countQuery, dataQuery]);
+
+  const pagiantion = createPaginationService(page, limit, total);
+
+  return {
+    data,
+    pagiantion,
+  };
+};
 
 const getActivity = async (id: number) => {
   const activity = await db.query.activity.findFirst({
