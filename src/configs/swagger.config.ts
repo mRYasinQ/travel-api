@@ -28,7 +28,10 @@ const swaggerDefinition: OAS3Definition = {
 
 const swaggerOptions: Options = {
   definition: swaggerDefinition,
-  apis: [path.join(process.cwd(), '{src,dist}/modules/**/*.swagger.yml')],
+  apis: [
+    path.join(process.cwd(), '{src,dist}/app.swagger.yml'),
+    path.join(process.cwd(), '{src,dist}/modules/**/*.swagger.yml'),
+  ],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);

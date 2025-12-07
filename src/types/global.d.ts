@@ -13,6 +13,7 @@ declare global {
       NODE_ENV: 'development' | 'production';
       APP_PORT: string;
       BASE_URL: string;
+      MAX_LIMIT_PAGINATION: string;
 
       REDIS_URL: string;
 
