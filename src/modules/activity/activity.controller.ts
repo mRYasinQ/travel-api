@@ -4,6 +4,7 @@ import createResponse from '../../common/helpers/createResponse';
 import AppError from '../../common/utils/AppError';
 import { getPaginationData } from '../../common/utils/pagination';
 
+import { toActivitiesResponse } from './activity.mapper';
 import ActivityMessage from './activity.message';
 import type { ActivityParam, CreateActivity, UpdateActivity } from './activity.schema';
 import { createActivity, deleteActivity, getActivities, updateActivity } from './activity.service';
@@ -15,7 +16,9 @@ const getActivitiesHandler: RequestHandler = async (req, res, next) => {
 
     const { data, pagiantion } = await getActivities({ pagination: paginationData });
 
-    return createResponse(res, 'OK', ActivityMessage.ACTIVITY_RETRIEVED, data, false, { pagiantion });
+    return createResponse(res, 'OK', ActivityMessage.ACTIVITY_RETRIEVED, toActivitiesResponse(data), false, {
+      pagiantion,
+    });
   } catch (error) {
     return next(error);
   }

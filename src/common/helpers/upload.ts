@@ -10,7 +10,12 @@ import getErrorMessage from '../utils/getErrorMessage';
 type Keys = keyof typeof UploadFolders;
 type Direction = (typeof UploadFolders)[Keys];
 
+const { BASE_URL } = process.env;
 const STATIC_PATH = path.join(process.cwd(), 'public');
+
+const getUploadUrlFile = (direction: Direction, fileName: string) => {
+  return `${BASE_URL}/public/${UploadFolders.base}/${direction}/${fileName}`;
+};
 
 const removeFile = async (direction: Direction, fileName: string) => {
   try {
@@ -39,4 +44,4 @@ const cleanupFiles = async (req: Request) => {
   }
 };
 
-export { removeFile, cleanupFiles };
+export { getUploadUrlFile, removeFile, cleanupFiles };

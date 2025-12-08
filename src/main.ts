@@ -2,6 +2,7 @@ import timeout from 'connect-timeout';
 import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
+import path from 'node:path';
 
 import { connectToDb } from './configs/db.config';
 import logger from './configs/logger.config';
@@ -27,6 +28,8 @@ const main = async () => {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+
+  app.use('/public', express.static(path.join(process.cwd(), 'public')));
 
   app.use(userAgentParser);
 
