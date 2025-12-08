@@ -16,6 +16,7 @@ declare global {
       MAX_LIMIT_PAGINATION: string;
 
       REDIS_URL: string;
+      REDIS_PASSWORD: string;
 
       DB_HOST: string;
       DB_PORT: string;

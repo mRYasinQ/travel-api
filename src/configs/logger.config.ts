@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { createLogger, format, transports } from 'winston';
 
-const NODE_ENV = process.env.NODE_ENV;
+const { NODE_ENV } = process.env;
 
 const logger = createLogger({
   format: format.combine(

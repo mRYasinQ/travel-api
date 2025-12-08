@@ -1,7 +1,7 @@
 import path from 'node:path';
 import swaggerJsDoc, { type OAS3Definition, type Options } from 'swagger-jsdoc';
 
-const BASE_URL = process.env.BASE_URL;
+const { BASE_URL } = process.env;
 
 const swaggerDefinition: OAS3Definition = {
   openapi: '3.0.1',

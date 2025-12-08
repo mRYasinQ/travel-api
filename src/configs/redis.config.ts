@@ -4,7 +4,7 @@ import getErrorMessage from '../common/utils/getErrorMessage';
 
 import logger from './logger.config';
 
-const REDIS_URL = process.env.REDIS_URL;
+const { REDIS_URL } = process.env;
 
 const redisClient = new Redis(REDIS_URL);
 
