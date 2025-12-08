@@ -1,7 +1,6 @@
 import { Router } from 'express';
 
 import UploadFolders from '../../common/constants/UploadFolders';
-import paginationQuerySchema from '../../common/validations/pagination';
 
 import checkAuth from '../../middlewares/checkAuth.middleware';
 import uploadFile from '../../middlewares/uploadFile.middleware';
@@ -13,7 +12,12 @@ import {
   getActivitiesHandler,
   updateActivityHandler,
 } from './activity.controller';
-import { activityParamSchema, createActivitySchema, updateActivitySchema } from './activity.schema';
+import {
+  activitiesQuerySchema,
+  activityParamSchema,
+  createActivitySchema,
+  updateActivitySchema,
+} from './activity.schema';
 
 const { ACTIVITY_FILE_SIZE } = process.env;
 const UPLOAD_IMAGE_FILED = 'image';
@@ -29,7 +33,7 @@ const uploadActivityImage = uploadFile({
 
 const activityRouter = Router();
 
-activityRouter.get('/', validationQuery(paginationQuerySchema), getActivitiesHandler);
+activityRouter.get('/', validationQuery(activitiesQuerySchema), getActivitiesHandler);
 
 activityRouter.use(checkAuth());
 activityRouter.post('/', uploadActivityImage, validationBody(createActivitySchema), createActivityHandler);

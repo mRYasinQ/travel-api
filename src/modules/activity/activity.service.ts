@@ -5,18 +5,23 @@ import db from '../../configs/db.config';
 import UploadFolders from '../../common/constants/UploadFolders';
 import { removeFile } from '../../common/helpers/upload';
 import AppError from '../../common/utils/AppError';
-import { createPaginationService, type PaginationData, withPagination } from '../../common/utils/pagination';
+import { getOrderByConfig } from '../../common/utils/filter';
+import { createPaginationService, withPagination } from '../../common/utils/pagination';
 
+import { ACTIVITY_ORDER_MAP } from './activity.constants';
 import activityEntity from './activity.entity';
 import ActivityMessage from './activity.message';
+import type { ActivitiesQuery } from './activity.schema';
 import type { UpdateActivityPayload } from './activity.types';
 
-type ActivitiesPayload = {
-  pagination: PaginationData;
-};
+const getActivities = async ({ page, limit, order_by }: ActivitiesQuery) => {
+  const orderExpressions = getOrderByConfig(order_by, ACTIVITY_ORDER_MAP);
 
-const getActivities = async ({ pagination: { page, limit } }: ActivitiesPayload) => {
-  const query = db.select().from(activityEntity).$withCache();
+  const query = db
+    .select()
+    .from(activityEntity)
+    .orderBy(...orderExpressions)
+    .$withCache();
   const dynamicQuery = query.$dynamic();
 
   const countQuery = db.select({ count: count() }).from(activityEntity).$withCache();
