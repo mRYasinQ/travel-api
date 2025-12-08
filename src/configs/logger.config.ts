@@ -12,7 +12,7 @@ const logger = createLogger({
 });
 
 if (NODE_ENV === 'production') {
-  logger.add(new transports.File({ filename: path.join(process.cwd(), 'app.log') }));
+  logger.add(new transports.File({ filename: path.join(process.cwd(), 'logs', 'app.log') }));
 }
 
 export default logger;
