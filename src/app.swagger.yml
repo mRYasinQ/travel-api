@@ -42,3 +42,18 @@ components:
       schema:
         type: number
         example: 20
+
+    OrderBy:
+      name: order_by
+      in: query
+      required: false
+      description: Accepts comma-separated values for multiple sort fields; prefix a field with a hyphen (-) for descending order.
+      schema:
+        type: array
+        items:
+          type: string
+        style: form 
+        explode: true 
+        example: 
+          - -created_at
+          - id

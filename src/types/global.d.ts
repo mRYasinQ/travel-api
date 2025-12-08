@@ -50,6 +50,8 @@ declare global {
       userAgent?: IResult;
     }
   }
+
+  type Nullable<T> = T | null;
 }
 
 export {};
