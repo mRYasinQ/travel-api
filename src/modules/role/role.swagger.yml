@@ -201,6 +201,19 @@ paths:
                   error:
                     type: string
                     example: Access denied. Authentication is required.
+        409:
+          description: Conflict.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 409
+                  error:
+                    type: string
+                    example: Role with this name already exists.
 
   /role/permissions:
     get:
@@ -332,6 +345,19 @@ paths:
                   error:
                     type: string
                     example: Role not found.
+        409:
+          description: Conflict.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 409
+                  error:
+                    type: string
+                    example: Role with this name already exists.
 
     delete:
       summary: Delete a role.
