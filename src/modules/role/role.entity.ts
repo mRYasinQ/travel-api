@@ -10,7 +10,7 @@ const roleEntity = mysqlTable('role', {
   name: varchar('name', { length: 150 }).unique().notNull(),
   permissions: json('permissions').$type<Permission[]>().default([]).notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at').notNull().onUpdateNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow().onUpdateNow(),
 });
 
 const roleRelations = relations(roleEntity, ({ many }) => ({

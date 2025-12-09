@@ -43,6 +43,13 @@
       "when": 1765223410511,
       "tag": "0005_rainy_sharon_ventura",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1765289331501,
+      "tag": "0006_real_pete_wisdom",
+      "breakpoints": true
     }
   ]
 }

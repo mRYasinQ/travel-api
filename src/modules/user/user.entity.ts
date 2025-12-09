@@ -15,7 +15,7 @@ const userEntity = mysqlTable('user', {
   isActive: boolean('is_active').notNull().default(true),
   isEmailVerified: boolean('is_email_verified').notNull().default(false),
   joinedAt: timestamp('joined_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at').notNull().onUpdateNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow().onUpdateNow(),
 });
 
 const userRelations = relations(userEntity, ({ one, many }) => ({
