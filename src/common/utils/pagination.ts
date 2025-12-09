@@ -9,11 +9,6 @@ interface Pagination {
   total: number;
 }
 
-type PaginationData = {
-  page: number;
-  limit: number;
-};
-
 const withPagination = <T extends MySqlSelect>(query: T, page: number, pageSize: number) => {
   const offset = (page - 1) * pageSize;
   const dataQuery = query.limit(pageSize).offset(offset);
@@ -35,4 +30,4 @@ const createPaginationService = (page: number, limit: number, total: number): Pa
   };
 };
 
-export { withPagination, createPaginationService, Pagination, PaginationData };
+export { withPagination, createPaginationService, Pagination };

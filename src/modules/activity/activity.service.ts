@@ -2,6 +2,7 @@ import { count, eq } from 'drizzle-orm';
 
 import db from '../../configs/db.config';
 
+import CommonMessage from '../../common/constants/Message';
 import UploadFolders from '../../common/constants/UploadFolders';
 import { removeFile } from '../../common/helpers/upload';
 import AppError from '../../common/utils/AppError';
@@ -55,7 +56,7 @@ const updateActivity = async (id: number, payload: UpdateActivityPayload) => {
   const activity = await getActivity(id);
 
   const [{ affectedRows }] = await db.update(activityEntity).set(payload).where(eq(activityEntity.id, activity.id));
-  if (affectedRows === 0) throw new AppError(ActivityMessage.NO_CHANGE_REQUIRED, 'OK');
+  if (affectedRows === 0) throw new AppError(CommonMessage.NO_CHANGE_REQUIRED, 'OK');
 
   if (payload.image) void removeFile(UploadFolders.activity, activity.image);
 

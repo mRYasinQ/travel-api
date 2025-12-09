@@ -24,6 +24,10 @@ components:
           type: number
           example: 32
   
+    Permission:
+      type: string
+      example: CREATE_ROLE
+  
   parameters:
     PaginationPage:
       name: page

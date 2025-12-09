@@ -59,12 +59,12 @@ components:
           type: string
           example: Activities retrieved successfully.
 
-    CreatedActivityResponse:
+    CreateActivityResponse:
       type: object
       properties:
         status_code:
           type: number
-          example: 200
+          example: 201
         message:
           type: string
           example: Activity created successfully.
@@ -123,7 +123,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreatedActivityResponse'
+                $ref: '#/components/schemas/CreateActivityResponse'
         400:
           description: Bad Request.
           content:
@@ -204,6 +204,19 @@ paths:
                   error:
                     type: string
                     example: Access denied. Authentication is required.
+        404:
+          description: Not Found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 404
+                  error:
+                    type: string
+                    example: Activity not found.
 
     delete:
       summary: Delete a activity.

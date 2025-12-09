@@ -1,5 +1,6 @@
 import type { RequestHandler } from 'express';
 
+import CommonMessage from '../../common/constants/Message';
 import createResponse from '../../common/helpers/createResponse';
 import AppError from '../../common/utils/AppError';
 
@@ -47,7 +48,7 @@ const updateActivityHandler: RequestHandler = async (req, res, next) => {
     const payload: UpdateActivityPayload = { ...body };
     if (image) payload.image = image;
 
-    if (Object.keys(payload).length === 0) throw new AppError(ActivityMessage.PAYLOAD_EMPTY, 'BAD_REQUEST');
+    if (Object.keys(payload).length === 0) throw new AppError(CommonMessage.PAYLOAD_EMPTY, 'BAD_REQUEST');
 
     await updateActivity(id, payload);
 
