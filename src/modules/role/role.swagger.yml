@@ -36,7 +36,8 @@ components:
         permissions:
           type: array
           items:
-            $ref: '#/components/schemas/Permission'
+            type: string
+            example: CREATE_ROLE
       required:
         - name
         - permissions
@@ -50,7 +51,8 @@ components:
         permissions:
           type: array
           items:
-            $ref: '#/components/schemas/Permission'
+            type: string
+            example: CREATE_ROLE
 
     RolesResponse:
       type: object

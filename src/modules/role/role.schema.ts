@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
-import PERMISSIONS from '../../common/constants/Permissions';
+import { PERMISSION_LIST } from '../../common/constants/Permissions';
 
-const permissionsEnum = z.enum(PERMISSIONS);
+const permissionsEnum = z.enum(PERMISSION_LIST);
 const permissionsSchema = z.preprocess((value) => {
   let processedArray = [];
 

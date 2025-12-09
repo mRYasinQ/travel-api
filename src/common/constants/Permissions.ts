@@ -1,15 +1,43 @@
 const PERMISSIONS = [
-  'SHOW_ROLE',
-  'CREATE_ROLE',
-  'UPDATE_ROLE',
-  'DELETE_ROLE',
-  'CREATE_ACTIVITY',
-  'UPDATE_ACTIVITY',
-  'DELETE_ACTIVITY',
+  {
+    label: 'Show Role',
+    value: 'SHOW_ROLE',
+  },
+  {
+    label: 'Create Role',
+    value: 'CREATE_ROLE',
+  },
+  {
+    label: 'Update Role',
+    value: 'UPDATE_ROLE',
+  },
+  {
+    label: 'Delete Role',
+    value: 'DELETE_ROLE',
+  },
+  {
+    label: 'Show Activity',
+    value: 'SHOW_ACTIVITY',
+  },
+  {
+    label: 'Create Activity',
+    value: 'CREATE_ACTIVITY',
+  },
+  {
+    label: 'Update Activity',
+    value: 'UPDATE_ACTIVITY',
+  },
+  {
+    label: 'Delete Activity',
+    value: 'DELETE_ACTIVITY',
+  },
 ] as const;
 
-type PermissionsType = typeof PERMISSIONS;
-type Permissions = PermissionsType[number];
+const PERMISSION_LIST = PERMISSIONS.map((p) => p.value);
 
-export { Permissions };
+type PermissionsType = typeof PERMISSIONS;
+type PermissionItemType = PermissionsType[number];
+type Permission = PermissionItemType['value'];
+
+export { PERMISSION_LIST, Permission };
 export default PERMISSIONS;
