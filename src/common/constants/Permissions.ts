@@ -8,8 +8,8 @@ const PERMISSIONS = [
   'DELETE_ACTIVITY',
 ] as const;
 
-type Permissions = typeof PERMISSIONS;
-type Permission = Permissions[number];
+type PermissionsType = typeof PERMISSIONS;
+type Permissions = PermissionsType[number];
 
-export { Permissions, Permission };
+export { Permissions };
 export default PERMISSIONS;

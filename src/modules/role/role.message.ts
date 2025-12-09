@@ -5,6 +5,7 @@ const RoleMessage = Object.freeze({
   ROLE_CREATED: 'Role created successfully.',
   ROLE_UPDATED: 'Role updated successfully.',
   ROLE_DELETED: 'Role deleted successfully.',
+  ROLE_EXIST: 'Role with this name already exists.',
   NOT_FOUND: 'Role not found.',
 });
 
