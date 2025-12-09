@@ -1,0 +1,333 @@
+tags:
+  - name: Role
+    description: Role endpoints.
+  
+components:
+  schemas:
+    Role:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        name:
+          type: string
+          example: Administrator
+        user_count:
+          type: number
+          example: 5
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        created_at:
+          type: string
+          example: 2021-01-01T00:00:00.000Z
+        updated_at:
+          type: string
+          example: 2021-01-01T00:00:00.000Z
+    
+    CreateRole:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Administrator
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+      required:
+        - name
+        - permissions
+
+    UpdateRole:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Administrator
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+
+    RolesResponse:
+      type: object
+      properties:
+        status_code:
+          type: number
+          example: 200
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+        message:
+          type: string
+          example: Roles retrieved successfully.
+
+    PermissionsResponse:
+      type: object
+      properties:
+        status_code:
+          type: number
+          example: 200
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        message:
+          type: string
+          example: Permissions retrieved successfully.
+
+    CreateRoleResponse:
+      type: object
+      properties:
+        status_code:
+          type: number
+          example: 201
+        message:
+          type: string
+          example: Role created successfully.
+
+    UpdateRoleResponse:
+      type: object
+      properties:
+        status_code:
+          type: number
+          example: 200
+        message:
+          type: string
+          example: Role updated successfully.
+
+    DeleteRoleResponse:
+      type: object
+      properties:
+        status_code:
+          type: number
+          example: 200
+        message:
+          type: string
+          example: Role deleted successfully.
+
+paths:
+  /role:
+    get:
+      summary: Get all roles.
+      tags: [Role]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/OrderBy'
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RolesResponse'
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 401
+                  error:
+                    type: string
+                    example: Access denied. Authentication is required.
+
+    post:
+      summary: Create a role.
+      tags: [Role]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRole'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateRole'
+      responses:
+        201:
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRoleResponse'
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 400
+                  error:
+                    type: string
+                    example: Invalid name or permissions.
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 401
+                  error:
+                    type: string
+                    example: Access denied. Authentication is required.
+
+  /role/permissions:
+    get:
+      summary: Get all permissions.
+      tags: [Role]
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionsResponse'
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 401
+                  error:
+                    type: string
+                    example: Access denied. Authentication is required.
+
+  /role/{id}:
+    patch:
+      summary: Update a role.
+      tags: ['Role']
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the role.
+          schema:
+            type: number
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRole'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UpdateRole'
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateRoleResponse'
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 400
+                  error:
+                    type: string
+                    example: Invalid name or permissions.
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 401
+                  error:
+                    type: string
+                    example: Access denied. Authentication is required.
+        404:
+          description: Not Found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 404
+                  error:
+                    type: string
+                    example: Role not found.
+
+    delete:
+      summary: Delete a role.
+      tags: ['Role']
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the role.
+          schema:
+            type: number
+            example: 1
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteRoleResponse'
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 401
+                  error:
+                    type: string
+                    example: Access denied. Authentication is required.
+        404:
+          description: Not Found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 404
+                  error:
+                    type: string
+                    example: Role not found.
