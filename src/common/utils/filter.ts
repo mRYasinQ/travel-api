@@ -2,7 +2,7 @@ import type { AnyColumn, SQL } from 'drizzle-orm';
 import { asc, desc } from 'drizzle-orm';
 
 type DrizzleColumns = {
-  [key: string]: AnyColumn;
+  [key: string]: AnyColumn | SQL;
 };
 
 const getOrderByConfig = (orderByItems: string[] | undefined, allowedColumns: DrizzleColumns): SQL[] => {
