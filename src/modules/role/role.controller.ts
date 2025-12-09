@@ -5,9 +5,10 @@ import PERMISSIONS from '../../common/constants/Permissions';
 import createResponse from '../../common/helpers/createResponse';
 import AppError from '../../common/utils/AppError';
 
+import { toRoleResponse, toRolesResponse } from './role.mapper';
 import RoleMessage from './role.message';
-import type { CreateRole, RoleParam, UpdateRole } from './role.schema';
-import { createRole, deleteRole, updateRole } from './role.service';
+import type { CreateRole, RoleParam, RolesQuery, UpdateRole } from './role.schema';
+import { createRole, deleteRole, getRole, getRoles, updateRole } from './role.service';
 
 const getPermissiosHandler: RequestHandler = async (_req, res, next) => {
   try {
@@ -17,15 +18,25 @@ const getPermissiosHandler: RequestHandler = async (_req, res, next) => {
   }
 };
 
-const getRolesHandler: RequestHandler = async (_req, _res, next) => {
+const getRolesHandler: RequestHandler = async (req, res, next) => {
   try {
+    const filters = req.validatedQuery as RolesQuery;
+
+    const roles = await getRoles(filters);
+
+    return createResponse(res, 'OK', RoleMessage.ROLES_RETRIEVED, toRolesResponse(roles));
   } catch (error) {
     return next(error);
   }
 };
 
-const getRoleHandler: RequestHandler = async (_req, _res, next) => {
+const getRoleHandler: RequestHandler = async (req, res, next) => {
   try {
+    const { id } = req.validatedParams as RoleParam;
+
+    const role = await getRole(id);
+
+    return createResponse(res, 'OK', RoleMessage.ROLE_RETRIEVED, toRoleResponse(role));
   } catch (error) {
     return next(error);
   }

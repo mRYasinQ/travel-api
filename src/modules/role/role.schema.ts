@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { PERMISSION_LIST } from '../../common/constants/Permissions';
+import filterQuerySchema from '../../common/validations/filter';
 
 const permissionsEnum = z.enum(PERMISSION_LIST);
 const permissionsSchema = z.preprocess((value) => {
@@ -33,8 +34,20 @@ const roleParamSchema = z.object({
   id: z.coerce.number().int().positive(),
 });
 
+const rolesQuerySchema = filterQuerySchema;
+
 type CreateRole = z.infer<typeof createRoleSchema>;
 type UpdateRole = z.infer<typeof updateRoleSchema>;
 type RoleParam = z.infer<typeof roleParamSchema>;
+type RolesQuery = z.infer<typeof rolesQuerySchema>;
 
-export { createRoleSchema, updateRoleSchema, roleParamSchema, CreateRole, UpdateRole, RoleParam };
+export {
+  createRoleSchema,
+  updateRoleSchema,
+  roleParamSchema,
+  rolesQuerySchema,
+  CreateRole,
+  UpdateRole,
+  RoleParam,
+  RolesQuery,
+};

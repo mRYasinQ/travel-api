@@ -68,6 +68,18 @@ components:
           type: string
           example: Roles retrieved successfully.
 
+    RoleResponse:
+      type: object
+      properties:
+        status_code:
+          type: number
+          example: 200
+        data:
+          $ref: '#/components/schemas/Role'
+        message:
+          type: string
+          example: Role retrieved successfully.
+
     PermissionsResponse:
       type: object
       properties:
@@ -218,6 +230,40 @@ paths:
                     example: Access denied. Authentication is required.
 
   /role/{id}:
+    get:
+      summary: Get a role.
+      tags: [Role]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the role.
+          schema:
+            type: number
+            example: 1
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleResponse'
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 401
+                  error:
+                    type: string
+                    example: Access denied. Authentication is required.
+
     patch:
       summary: Update a role.
       tags: ['Role']
