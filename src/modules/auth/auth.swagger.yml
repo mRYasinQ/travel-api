@@ -480,15 +480,4 @@ paths:
                     type: string
                     example: Logged out successfully.
         401:
-          description: Unauthorized.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status_code:
-                    type: number
-                    example: 401
-                  error:
-                    type: string
-                    example: Access denied. Authentication is required.
+          $ref: '#/components/schemas/UnauthorizedResponse'

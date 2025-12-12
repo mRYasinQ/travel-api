@@ -94,18 +94,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/SessionsResponse'
         401:
-          description: Unauthorized.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status_code:
-                    type: number
-                    example: 401
-                  error:
-                    type: string
-                    example: Access denied. Authentication is required.
+          $ref: '#/components/schemas/UnauthorizedResponse'
 
   /session/clear:
     post:
@@ -143,18 +132,7 @@ paths:
                     type: string
                     example: Invalid request.
         401:
-          description: Unauthorized.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status_code:
-                    type: number
-                    example: 401
-                  error:
-                    type: string
-                    example: Access denied. Authentication is required.
+          $ref: '#/components/schemas/UnauthorizedResponse'
 
   /session/{id}:
     get:
@@ -177,32 +155,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SessionResponse'
-        400:
-          description: Bad Request.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status_code:
-                    type: number
-                    example: 400
-                  error:
-                    type: string
-                    example: Invalid request.
         401:
-          description: Unauthorized.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status_code:
-                    type: number
-                    example: 401
-                  error:
-                    type: string
-                    example: Access denied. Authentication is required.
+          $ref: '#/components/schemas/UnauthorizedResponse'
         404:
           description: Not Found.
           content:
@@ -238,18 +192,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/DeleteSessionResponse'
         401:
-          description: Unauthorized.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status_code:
-                    type: number
-                    example: 401
-                  error:
-                    type: string
-                    example: Access denied. Authentication is required.
+          $ref: '#/components/schemas/UnauthorizedResponse'
         404:
           description: Not Found.
           content:

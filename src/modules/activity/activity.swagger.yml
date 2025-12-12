@@ -138,18 +138,9 @@ paths:
                     type: string
                     example: Invalid name or image.
         401:
-          description: Unauthorized.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status_code:
-                    type: number
-                    example: 401
-                  error:
-                    type: string
-                    example: Access denied. Authentication is required.
+          $ref: '#/components/schemas/UnauthorizedResponse'
+        403:
+          $ref: '#/components/schemas/ForbiddenResponse'
 
   /activity/{id}:
     patch:
@@ -192,18 +183,9 @@ paths:
                     type: string
                     example: Invalid name or image.
         401:
-          description: Unauthorized.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status_code:
-                    type: number
-                    example: 401
-                  error:
-                    type: string
-                    example: Access denied. Authentication is required.
+          $ref: '#/components/schemas/UnauthorizedResponse'
+        403:
+          $ref: '#/components/schemas/ForbiddenResponse'
         404:
           description: Not Found.
           content:
@@ -239,18 +221,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/DeleteActivityResponse'
         401:
-          description: Unauthorized.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status_code:
-                    type: number
-                    example: 401
-                  error:
-                    type: string
-                    example: Access denied. Authentication is required.
+          $ref: '#/components/schemas/UnauthorizedResponse'
+        403:
+          $ref: '#/components/schemas/ForbiddenResponse'
         404:
           description: Not Found.
           content:

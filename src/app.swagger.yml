@@ -33,7 +33,35 @@ components:
         value:
           type: string
           example: CREATE_ROLE
-  
+
+    UnauthorizedResponse:
+      description: Unauthorized.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status_code:
+                type: number
+                example: 401
+              error:
+                type: string
+                example: Access denied. Authentication is required.
+
+    ForbiddenResponse:
+      description: Forbidden.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status_code:
+                type: number
+                example: 403
+              error:
+                type: string
+                example: You do not have permission to perform this action.
+
   parameters:
     PaginationPage:
       name: page
