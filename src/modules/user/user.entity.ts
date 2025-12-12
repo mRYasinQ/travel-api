@@ -20,7 +20,10 @@ const userEntity = mysqlTable('user', {
 
 const userRelations = relations(userEntity, ({ one, many }) => ({
   sessions: many(sessionEntity),
-  role: one(roleEntity),
+  role: one(roleEntity, {
+    fields: [userEntity.roleId],
+    references: [roleEntity.id],
+  }),
 }));
 
 export { userRelations };

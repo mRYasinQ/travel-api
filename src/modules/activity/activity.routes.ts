@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import UploadFolders from '../../common/constants/UploadFolders';
 
-import checkAuth from '../../middlewares/checkAuth.middleware';
+import { checkAuth } from '../../middlewares/auth.middleware';
 import uploadFile from '../../middlewares/uploadFile.middleware';
 import { validationBody, validationParams, validationQuery } from '../../middlewares/validation.middleware';
 

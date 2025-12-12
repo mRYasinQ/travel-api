@@ -1,11 +1,13 @@
 import type { StringValue } from 'ms';
 import type { IResult } from 'ua-parser-js';
 
+import roleEntity from '../modules/role/role.entity';
 import sessionEntity from '../modules/session/session.entity';
 import userEntity from '../modules/user/user.entity';
 
 type Session = Pick<typeof sessionEntity.$inferSelect, 'id' | 'token'>;
-type User = Omit<typeof userEntity.$inferSelect, 'password'> & { activeSession: Session };
+type Role = Omit<typeof roleEntity.$inferSelect, 'createdAt' | 'updatedAt'>;
+type User = Omit<typeof userEntity.$inferSelect, 'password'> & { activeSession: Session; role: Nullable<Role> };
 
 declare global {
   namespace NodeJS {

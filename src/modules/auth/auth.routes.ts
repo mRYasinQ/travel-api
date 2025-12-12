@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import checkAuth from '../../middlewares/checkAuth.middleware';
+import { checkAuth } from '../../middlewares/auth.middleware';
 import { validationBody } from '../../middlewares/validation.middleware';
 
 import {
