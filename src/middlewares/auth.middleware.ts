@@ -3,6 +3,7 @@ import type { Request, RequestHandler } from 'express';
 
 import db from '../configs/db.config';
 
+import DEFAULT_PERMISSIONS from '../common/constants/DefaultPermissions';
 import CommonMessage from '../common/constants/Message';
 import type { Permission } from '../common/constants/Permissions';
 import AppError from '../common/utils/AppError';
@@ -59,7 +60,7 @@ const checkAuth = (isOptional: boolean = false): RequestHandler => {
 const checkPermissions = (...permissions: Permission[]): RequestHandler => {
   return async (req, _res, next) => {
     try {
-      const userPermissions = req.user?.role?.permissions ?? [];
+      const userPermissions = req.user?.role?.permissions ?? DEFAULT_PERMISSIONS;
 
       const hasAllPermissions = permissions.every((permission) => userPermissions.includes(permission));
       if (!hasAllPermissions) throw new AppError(CommonMessage.ACCESS_DENIED, 'FORBIDDEN');
