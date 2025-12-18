@@ -57,9 +57,14 @@ const createRoleHandler: RequestHandler = async (req, res, next) => {
 const updateRoleHandler: RequestHandler = async (req, res, next) => {
   try {
     const { id } = req.validatedParams as RoleParam;
-    const payload = req.validatedBody as UpdateRole;
 
+    const payload = req.validatedBody as UpdateRole;
     if (Object.keys(payload).length === 0) throw new AppError(CommonMessage.PAYLOAD_EMPTY, 'BAD_REQUEST');
+
+    const roleId = req.user?.roleId;
+    if (roleId === id && payload.permissions) {
+      throw new AppError(RoleMessage.CANNOT_UPDATE_OWN_ROLE_PERMISSIONS, 'CONFLICT');
+    }
 
     await updateRole(id, payload);
 
@@ -72,6 +77,9 @@ const updateRoleHandler: RequestHandler = async (req, res, next) => {
 const deleteRoleHandler: RequestHandler = async (req, res, next) => {
   try {
     const { id } = req.validatedParams as RoleParam;
+
+    const roleId = req.user?.roleId;
+    if (roleId === id) throw new AppError(RoleMessage.CANNOT_DELETE_OWN_ROLE, 'CONFLICT');
 
     await deleteRole(id);
 

@@ -1,7 +1,7 @@
 tags:
   - name: Role
     description: Role endpoints.
-  
+
 components:
   schemas:
     Role:
@@ -26,7 +26,7 @@ components:
         updated_at:
           type: string
           example: 2021-01-01T00:00:00.000Z
-    
+
     CreateRole:
       type: object
       properties:
@@ -123,6 +123,20 @@ components:
         message:
           type: string
           example: Role deleted successfully.
+
+    NotFoundRoleResponse:
+      description: Not Found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status_code:
+                type: number
+                example: 404
+              error:
+                type: string
+                example: Role not found.
 
 paths:
   /role:
@@ -240,6 +254,8 @@ paths:
           $ref: '#/components/schemas/UnauthorizedResponse'
         403:
           $ref: '#/components/schemas/ForbiddenResponse'
+        404:
+          $ref: '#/components/schemas/NotFoundRoleResponse'
 
     patch:
       summary: Update a role.
@@ -288,18 +304,7 @@ paths:
         403:
           $ref: '#/components/schemas/ForbiddenResponse'
         404:
-          description: Not Found.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status_code:
-                    type: number
-                    example: 404
-                  error:
-                    type: string
-                    example: Role not found.
+          $ref: '#/components/schemas/NotFoundRoleResponse'
         409:
           description: Conflict.
           content:
@@ -312,7 +317,17 @@ paths:
                     example: 409
                   error:
                     type: string
-                    example: Role with this name already exists.
+              examples:
+                RoleExist:
+                  summary: Role already exists.
+                  value:
+                    status_code: 409
+                    error: Role with this name already exists.
+                OwnRoleConflict:
+                  summary: Cannot modify own role.
+                  value:
+                    status_code: 409
+                    error: You cannot update the permissions of the role that is currently assigned to you.
 
     delete:
       summary: Delete a role.
@@ -339,7 +354,9 @@ paths:
         403:
           $ref: '#/components/schemas/ForbiddenResponse'
         404:
-          description: Not Found.
+          $ref: '#/components/schemas/NotFoundRoleResponse'
+        409:
+          description: Conflict.
           content:
             application/json:
               schema:
@@ -347,7 +364,7 @@ paths:
                 properties:
                   status_code:
                     type: number
-                    example: 404
+                    example: 409
                   error:
                     type: string
-                    example: Role not found.
+                    example: You cannot delete the role that is currently assigned to you.
