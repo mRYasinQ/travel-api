@@ -23,7 +23,9 @@
     "db:migrate": "bunx drizzle-kit migrate",
     "db:push": "bunx drizzle-kit push",
     "db:up": "bunx drizzle-kit up",
-    "db:check": "bunx drizzle-kit check"
+    "db:check": "bunx drizzle-kit check",
+    "db:superuser": "bun dist/scripts/create-superuser.js",
+    "db:superuser:dev": "bun src/scripts/create-superuser.ts"
   },
   "lint-staged": {
     "src/**/*.ts": [
