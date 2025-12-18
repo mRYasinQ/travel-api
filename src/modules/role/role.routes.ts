@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { checkAuth } from '../../middlewares/auth.middleware';
+import { checkAuth, checkPermissions } from '../../middlewares/auth.middleware';
 import { validationBody, validationParams, validationQuery } from '../../middlewares/validation.middleware';
 
 import {
@@ -17,13 +17,19 @@ const roleRouter = Router();
 
 roleRouter.use(checkAuth());
 
-roleRouter.get('/', validationQuery(rolesQuerySchema), getRolesHandler);
-roleRouter.post('/', validationBody(createRoleSchema), createRoleHandler);
+roleRouter.get('/', checkPermissions('SHOW_ROLE'), validationQuery(rolesQuerySchema), getRolesHandler);
+roleRouter.post('/', checkPermissions('CREATE_ROLE'), validationBody(createRoleSchema), createRoleHandler);
 
-roleRouter.get('/permissions', getPermissiosHandler);
+roleRouter.get('/permissions', checkPermissions('SHOW_ROLE'), getPermissiosHandler);
 
-roleRouter.get('/:id', validationParams(roleParamSchema), getRoleHandler);
-roleRouter.patch('/:id', validationParams(roleParamSchema), validationBody(updateRoleSchema), updateRoleHandler);
-roleRouter.delete('/:id', validationParams(roleParamSchema), deleteRoleHandler);
+roleRouter.get('/:id', checkPermissions('SHOW_ROLE'), validationParams(roleParamSchema), getRoleHandler);
+roleRouter.patch(
+  '/:id',
+  checkPermissions('UPDATE_ROLE'),
+  validationParams(roleParamSchema),
+  validationBody(updateRoleSchema),
+  updateRoleHandler,
+);
+roleRouter.delete('/:id', checkPermissions('DELETE_ROLE'), validationParams(roleParamSchema), deleteRoleHandler);
 
 export default roleRouter;
