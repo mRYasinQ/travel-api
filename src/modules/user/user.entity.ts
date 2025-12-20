@@ -9,7 +9,7 @@ const userEntity = mysqlTable('user', {
   firstName: varchar('first_name', { length: 30 }),
   lastName: varchar('last_name', { length: 30 }),
   email: varchar('email', { length: 255 }).notNull().unique(),
-  username: varchar('username', { length: 40 }).unique(),
+  username: varchar('username', { length: 40 }).notNull().unique(),
   password: varchar('password', { length: 200 }).notNull(),
   roleId: int('role_id').references(() => roleEntity.id, { onUpdate: 'cascade', onDelete: 'set null' }),
   isActive: boolean('is_active').notNull().default(true),

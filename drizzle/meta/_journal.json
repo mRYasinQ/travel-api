@@ -57,6 +57,13 @@
       "when": 1765314337344,
       "tag": "0007_tidy_sunspot",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1766144010887,
+      "tag": "0008_tan_kabuki",
+      "breakpoints": true
     }
   ]
 }

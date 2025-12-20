@@ -10,7 +10,7 @@ import { comparePassword, hashPassword } from '../../common/helpers/password';
 import { execAndExtract } from '../../common/helpers/redis';
 import { sendMailSync } from '../../common/helpers/sendMail';
 import AppError from '../../common/utils/AppError';
-import { generateOtp, generateRandomBytes } from '../../common/utils/random';
+import { generateOtp, generateRandomBytes, generateRandomString } from '../../common/utils/random';
 
 import sessionEntity from '../session/session.entity';
 import userEntity from '../user/user.entity';
@@ -75,9 +75,10 @@ const registerUser = async (email: string, password: string, otp: string) => {
   const userExist = await checkUserExist(email);
   if (userExist) throw new AppError(AuthMessage.EMAIL_ALREADY_ASSOCIATED, 'BAD_REQUEST');
 
+  const username = `u_${generateRandomString(8)}`;
   const hashedPassword = await hashPassword(password);
 
-  await db.insert(userEntity).values({ email, password: hashedPassword, isEmailVerified: true });
+  await db.insert(userEntity).values({ email, username, password: hashedPassword, isEmailVerified: true });
 
   return;
 };
