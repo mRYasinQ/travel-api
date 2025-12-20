@@ -1,0 +1,659 @@
+tags:
+  - name: User
+    description: User endpoints.
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        first_name:
+          type: string
+          nullable: true
+          example: Yasin
+        last_name:
+          type: string
+          nullable: true
+          example: Abbasi
+        email:
+          type: string
+          example: yasinabbasi.y20@gmail.com
+        username:
+          type: string
+          example: mryasinq
+        role_id:
+          type: number
+          example: 1
+        role:
+          type: object
+          nullabe: true
+          properties:
+            id:
+              type: number
+              example: 1
+            name:
+              type: string
+              example: Admin
+            permissions:
+              type: array
+              items:
+                type: string
+                example: CREATE_USER
+        is_active:
+          type: boolean
+          example: true
+        is_email_verified:
+          type: boolean
+          example: false
+        joined_at:
+          type: string
+          example: 2021-01-01T00:00:00.000Z
+        updated_at:
+          type: string
+          example: 2021-01-01T00:00:00.000Z
+
+    PublicUser:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        first_name:
+          type: string
+          nullable: true
+          example: Yasin
+        last_name:
+          type: string
+          nullable: true
+          example: Abbasi
+        username:
+          type: string
+          example: mryasinq
+        role_id:
+          type: number
+          example: 1
+        role:
+          type: object
+          nullabe: true
+          properties:
+            id:
+              type: number
+              example: 1
+            name:
+              type: string
+              example: Admin
+        is_active:
+          type: boolean
+          example: true
+        joined_at:
+          type: string
+          example: 2021-01-01T00:00:00.000Z
+        updated_at:
+          type: string
+          example: 2021-01-01T00:00:00.000Z
+
+    CreateUser:
+      type: object
+      properties:
+        first_name:
+          type: string
+          minLength: 3
+          maxLength: 30
+          nullable: true
+          example: Yasin
+        last_name:
+          type: string
+          minLength: 3
+          maxLength: 30
+          nullable: true
+          example: Abbasi
+        username:
+          type: string
+          pattern: '^[a-z][a-z0-9\_]{3,25}$'
+          example: mryasinq
+        email:
+          type: string
+          example: yasinabbasi.y20@gmail.com
+        password:
+          type: string
+          example: password
+        role_id:
+          type: number
+          nullabe: true
+          example: 1
+        is_active:
+          type: boolean
+          example: true
+        is_email_verified:
+          type: boolean
+          example: false
+      required:
+        - username
+        - email
+        - password
+
+    UpdateUser:
+      type: object
+      properties:
+        first_name:
+          type: string
+          minLength: 3
+          maxLength: 30
+          nullable: true
+          example: Yasin
+        last_name:
+          type: string
+          minLength: 3
+          maxLength: 30
+          nullable: true
+          example: Abbasi
+        username:
+          type: string
+          pattern: '^[a-z][a-z0-9\_]{3,25}$'
+          example: mryasinq
+        email:
+          type: string
+          example: yasinabbasi.y20@gmail.com
+        password:
+          type: string
+          example: password
+        role_id:
+          type: number
+          nullabe: true
+          example: 1
+        is_active:
+          type: boolean
+          example: true
+        is_email_verified:
+          type: boolean
+          example: false
+
+    UpdateProfile:
+      type: object
+      properties:
+        first_name:
+          type: string
+          minLength: 3
+          maxLength: 30
+          nullable: true
+          example: Yasin
+        last_name:
+          type: string
+          minLength: 3
+          maxLength: 30
+          nullable: true
+          example: Abbasi
+        username:
+          type: string
+          pattern: '^[a-z][a-z0-9\_]{3,25}$'
+          example: mryasinq
+        email:
+          type: string
+          example: yasinabbasi.y20@gmail.com
+
+    ProfileResponse:
+      type: object
+      properties:
+        status_code:
+          type: number
+          example: 200
+        data:
+          $ref: '#/components/schemas/User'
+        message:
+          type: string
+          example: پروفایل با موفقیت دریافت شد.
+
+    UpdateProfileResponse:
+      type: object
+      properties:
+        status_code:
+          type: number
+          example: 200
+        message:
+          type: string
+          example: پروفایل بروزرسانی شد.
+
+    UsersResponse:
+      type: object
+      properties:
+        status_code:
+          type: number
+          example: 200
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        message:
+          type: string
+          example: کاربران با موفقیت دریافت شدند.
+
+    UserResponse:
+      description: Success.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserResponse'
+          examples:
+            WithShowUser:
+              summary: With "SHOW_USER" permission.
+              value:
+                status_code: 200
+                data:
+                  id: 1
+                  first_name: Yasin
+                  last_name: Abbasi
+                  email: yasinabbasi.y20@gmail.com
+                  username: mryasinq
+                  role_id: 1
+                  role: { id: 1, name: 'Admin', permissions: ['CREATE_USER'] }
+                  is_active: true
+                  is_email_verified: false
+                  joined_at: 2021-01-01T00:00:00.000Z
+                  updated_at: 2021-01-01T00:00:00.000Z
+                message: کاربر با موفقیت دریافت شد.
+            WithoutShowUser:
+              summary: Without "SHOW_USER" permission.
+              value:
+                status_code: 200
+                data:
+                  id: 1
+                  first_name: Yasin
+                  last_name: Abbasi
+                  username: mryasinq
+                  role_id: 1
+                  role: { id: 1, name: 'Admin' }
+                  is_active: true
+                  joined_at: 2021-01-01T00:00:00.000Z
+                  updated_at: 2021-01-01T00:00:00.000Z
+                message: کاربر با موفقیت دریافت شد.
+
+    CreateUserResponse:
+      type: object
+      properties:
+        status_code:
+          type: number
+          example: 201
+        message:
+          type: string
+          example: کاربر ایجاد شد.
+
+    UpdateUserResponse:
+      type: object
+      properties:
+        status_code:
+          type: number
+          example: 200
+        message:
+          type: string
+          example: کاربر بروزرسانی شد.
+
+    DeleteUserResponse:
+      type: object
+      properties:
+        status_code:
+          type: number
+          example: 200
+        message:
+          type: string
+          example: کاربر حذف شد.
+
+    UserExistResponse:
+      description: Conflict.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status_code:
+                type: number
+                example: 409
+              error:
+                type: string
+          examples:
+            UsernameExist:
+              summary: Username already exists.
+              value:
+                status_code: 409
+                error: حسابی با این نام کاربری ثبت شده است.
+            EmailExist:
+              summary: Email already exists.
+              value:
+                status_code: 409
+                error: حسابی با این ایمیل ثبت شده است.
+
+    NotFoundUserResponse:
+      description: Not Found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status_code:
+                type: number
+                example: 404
+              error:
+                type: string
+                example: کاربر یافت نشد.
+
+paths:
+  /user/me:
+    get:
+      summary: Get profile.
+      tags: [User]
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+        401:
+          $ref: '#/components/schemas/UnauthorizedResponse'
+
+    patch:
+      summary: Update profile.
+      tags: [User]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UpdateProfile'
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateProfileResponse'
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 400
+                  error:
+                    type: string
+                    example: ایمیل معتبر نمی‌باشد.
+        401:
+          $ref: '#/components/schemas/UnauthorizedResponse'
+        403:
+          $ref: '#/components/schemas/ForbiddenResponse'
+        404:
+          $ref: '#/components/schemas/NotFoundUserResponse'
+        409:
+          $ref: '#/components/schemas/UserExistResponse'
+
+  /user:
+    get:
+      summary: Get all users.
+      tags: [User]
+      security:
+        - bearerAuth: []
+        - {}
+      parameters:
+        - $ref: '#/components/parameters/PaginationPage'
+        - $ref: '#/components/parameters/PaginationLimit'
+        - $ref: '#/components/parameters/OrderBy'
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersResponse'
+              examples:
+                WithShowUser:
+                  summary: With "SHOW_USER" permission.
+                  value:
+                    status_code: 200
+                    data:
+                      [
+                        {
+                          id: 1,
+                          first_name: Yasin,
+                          last_name: Abbasi,
+                          email: yasinabbasi.y20@gmail.com,
+                          username: mryasinq,
+                          role_id: 1,
+                          role: { id: 1, name: 'Admin', permissions: ['CREATE_USER'] },
+                          is_active: true,
+                          is_email_verified: false,
+                          joined_at: 2021-01-01T00:00:00.000Z,
+                          updated_at: 2021-01-01T00:00:00.000Z,
+                        },
+                      ]
+                    message: کاربران با موفقیت دریافت شدند.
+                WithoutShowUser:
+                  summary: Without "SHOW_USER" permission.
+                  value:
+                    status_code: 200
+                    data:
+                      [
+                        {
+                          id: 1,
+                          first_name: Yasin,
+                          last_name: Abbasi,
+                          username: mryasinq,
+                          role_id: 1,
+                          role: { id: 1, name: 'Admin' },
+                          is_active: true,
+                          joined_at: 2021-01-01T00:00:00.000Z,
+                          updated_at: 2021-01-01T00:00:00.000Z,
+                        },
+                      ]
+                    message: کاربران با موفقیت دریافت شدند.
+
+    post:
+      summary: Create a user.
+      tags: [User]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateUser'
+      responses:
+        201:
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUserResponse'
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 400
+                  error:
+                    type: string
+                    example: نام کاربری معتبر نمی‌باشد.
+        401:
+          $ref: '#/components/schemas/UnauthorizedResponse'
+        403:
+          $ref: '#/components/schemas/ForbiddenResponse'
+        409:
+          $ref: '#/components/schemas/UserExistResponse'
+
+  /user/by-username/{username}:
+    get:
+      summary: Get a user by username.
+      tags: [User]
+      security:
+        - bearerAuth: []
+        - {}
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: The username of the user.
+          schema:
+            type: string
+            example: mryasinq
+      responses:
+        200:
+          $ref: '#/components/schemas/UserResponse'
+        404:
+          $ref: '#/components/schemas/NotFoundUserResponse'
+
+  /user/{id}:
+    get:
+      summary: Get a user.
+      tags: [User]
+      security:
+        - bearerAuth: []
+        - {}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the user.
+          schema:
+            type: number
+            example: 1
+      responses:
+        200:
+          $ref: '#/components/schemas/UserResponse'
+        404:
+          $ref: '#/components/schemas/NotFoundUserResponse'
+
+    patch:
+      summary: Update a user.
+      tags: [User]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the user.
+          schema:
+            type: number
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UpdateUser'
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateUserResponse'
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 400
+                  error:
+                    type: string
+                    example: ایمیل معتبر نمی‌باشد.
+        401:
+          $ref: '#/components/schemas/UnauthorizedResponse'
+        403:
+          $ref: '#/components/schemas/ForbiddenResponse'
+        404:
+          $ref: '#/components/schemas/NotFoundUserResponse'
+        409:
+          description: Conflict.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 409
+                  error:
+                    type: string
+              examples:
+                UpdateSelf:
+                  summary: Cannot update self.
+                  value:
+                    status_code: 409
+                    error: امکان ویرایش حساب خود را از این بخش ندارید.
+                UsernameExist:
+                  summary: Username already exists.
+                  value:
+                    status_code: 409
+                    error: حسابی با این نام کاربری ثبت شده است.
+                EmailExist:
+                  summary: Email already exists.
+                  value:
+                    status_code: 409
+                    error: حسابی با این ایمیل ثبت شده است.
+
+    delete:
+      summary: Delete a user.
+      tags: [User]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the user.
+          schema:
+            type: number
+            example: 1
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteUserResponse'
+        401:
+          $ref: '#/components/schemas/UnauthorizedResponse'
+        403:
+          $ref: '#/components/schemas/ForbiddenResponse'
+        404:
+          $ref: '#/components/schemas/NotFoundUserResponse'
+        409:
+          description: Conflict.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 409
+                  error:
+                    type: string
+                    example: امکان حذف حساب خود را ندارید.

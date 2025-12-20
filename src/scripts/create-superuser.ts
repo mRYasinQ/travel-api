@@ -1,16 +1,15 @@
-import { eq, or } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 
 import db from '../configs/db.config';
-import logger from '../configs/logger.config';
 
 import { PERMISSION_LIST } from '../common/constants/Permissions';
-import { hashPassword } from '../common/helpers/password';
 import getErrorMessage from '../common/utils/getErrorMessage';
 
 import roleEntity from '../modules/role/role.entity';
-import userEntity from '../modules/user/user.entity';
+import { type CreateUser, createUserSchema } from '../modules/user/user.schema';
+import { createUser } from '../modules/user/user.service';
 
-const ROLE_NAME = 'Founder';
+const ROLE_NAME = 'مدیر';
 
 const craeteRole = async () => {
   let roleId: number;
@@ -35,57 +34,54 @@ const craeteRole = async () => {
 };
 
 const createSuperUser = async () => {
-  logger.info('Superuser creation script');
+  console.log('Superuser creation script');
 
   try {
     const roleId = await craeteRole();
 
-    const firstName = prompt('Enter first name (optional):') || undefined;
-    const lastName = prompt('Enter last name (optional):') || undefined;
-    const username = prompt('Enter username (optional):') || undefined;
+    const firstName = prompt('Enter first name (optional):') || null;
+    const lastName = prompt('Enter last name (optional):') || null;
+
+    let username = '';
+    while (!username) {
+      username = prompt('Enter username:') || '';
+      if (!username) console.warn('username is required.');
+    }
 
     let email = '';
     while (!email) {
       email = prompt('Enter email:') || '';
-      if (!email) console.warn('Email is required.');
+      if (!email) console.warn('email is required.');
     }
 
     let password = '';
     while (!password) {
       password = prompt('Enter password:') || '';
-      if (!password) console.warn('Password is required.');
+      if (!password) console.warn('password is required.');
     }
 
-    const conditions = [eq(userEntity.email, email)];
-    if (username) conditions.push(eq(userEntity.username, username));
-
-    const userExist = await db.query.user.findFirst({
-      where: or(...conditions),
-      columns: { id: true },
-    });
-
-    if (userExist) {
-      logger.error(`User with email ${email} or username ${username} already exists.`);
+    const payload: CreateUser = {
+      first_name: firstName,
+      last_name: lastName,
+      username,
+      email,
+      password,
+      role_id: roleId,
+    };
+    const validatePayload = await createUserSchema.safeParseAsync(payload);
+    if (!validatePayload.success) {
+      console.error(validatePayload.error.issues[0].message);
       process.exit(1);
     }
 
-    const hashedPassword = await hashPassword(password);
+    const newUser = validatePayload.data;
 
-    await db.insert(userEntity).values({
-      firstName,
-      lastName,
-      email,
-      username,
-      password: hashedPassword,
-      roleId,
-      isEmailVerified: true,
-      isActive: true,
-    });
+    await createUser({ ...newUser, is_email_verified: true });
 
-    logger.info('Superuser created successfully!');
+    console.log('Superuser created successfully!');
     process.exit(0);
   } catch (error) {
-    logger.error(`Superuser creation failed, Error: ${getErrorMessage(error)}.`);
+    console.error(`Superuser creation failed, Error: ${getErrorMessage(error)}.`);
     process.exit(1);
   }
 };

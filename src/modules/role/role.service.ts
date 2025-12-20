@@ -13,6 +13,11 @@ import roleEntity from './role.entity';
 import RoleMessage from './role.message';
 import type { CreateRole, RolesQuery, UpdateRole } from './role.schema';
 
+const checkRoleExist = async (id: number) => {
+  const role = await db.query.role.findFirst({ where: eq(roleEntity.id, id), columns: { id: true } });
+  return role ? true : false;
+};
+
 const checkExistRoleByName = async (name: string) => {
   const role = await db.query.role.findFirst({ where: eq(roleEntity.name, name), columns: { id: true } });
   return role ? true : false;
@@ -93,4 +98,4 @@ const deleteRole = async (id: number) => {
   return;
 };
 
-export { getRoles, getRole, createRole, updateRole, deleteRole };
+export { getRoles, getRole, createRole, updateRole, deleteRole, checkRoleExist };
