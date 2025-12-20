@@ -1,35 +1,55 @@
 const PERMISSIONS = [
   {
-    label: 'Show Role',
+    label: 'نمایش نقش',
     value: 'SHOW_ROLE',
   },
   {
-    label: 'Create Role',
+    label: 'ایجاد نقش',
     value: 'CREATE_ROLE',
   },
   {
-    label: 'Update Role',
+    label: 'بروزرسانی نقش',
     value: 'UPDATE_ROLE',
   },
   {
-    label: 'Delete Role',
+    label: 'حذف نقش',
     value: 'DELETE_ROLE',
   },
   {
-    label: 'Show Activity',
+    label: 'نمایش فعالیت',
     value: 'SHOW_ACTIVITY',
   },
   {
-    label: 'Create Activity',
+    label: 'ایجاد فعالیت',
     value: 'CREATE_ACTIVITY',
   },
   {
-    label: 'Update Activity',
+    label: 'بروزرسانی فعالیت',
     value: 'UPDATE_ACTIVITY',
   },
   {
-    label: 'Delete Activity',
+    label: 'حذف فعالیت',
     value: 'DELETE_ACTIVITY',
+  },
+  {
+    label: 'بروزرسانی پروفایل',
+    value: 'UPDATE_PROFILE',
+  },
+  {
+    label: 'نمایش کاربر',
+    value: 'SHOW_USER',
+  },
+  {
+    label: 'ایجاد کاربر',
+    value: 'CREATE_USER',
+  },
+  {
+    label: 'بروزرسانی کاربر',
+    value: 'UPDATE_USER',
+  },
+  {
+    label: 'حذف کاربر',
+    value: 'DELETE_USER',
   },
 ] as const;
 

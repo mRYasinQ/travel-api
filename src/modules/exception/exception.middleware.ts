@@ -5,20 +5,13 @@ import logger from '../../configs/logger.config';
 
 import type { HttpStatusCodeKeys } from '../../common/constants/HttpStatusCode';
 import createResponse from '../../common/helpers/createResponse';
-import formatMessage from '../../common/helpers/formatMessage';
 import { cleanupFiles } from '../../common/helpers/upload';
 import AppError from '../../common/utils/AppError';
 
 import ExceptionMessage from './exception.message';
 
-const notFoundErrorHandler: RequestHandler = (req, res) => {
-  return createResponse(
-    res,
-    'NOT_FOUND',
-    formatMessage(ExceptionMessage.NOT_FOUND, { method: req.method, route: req.originalUrl }),
-    undefined,
-    true,
-  );
+const notFoundErrorHandler: RequestHandler = (_req, res) => {
+  return createResponse(res, 'NOT_FOUND', ExceptionMessage.NOT_FOUND, undefined, true);
 };
 
 const requestTimeoutHandler: ErrorRequestHandler = (err, req, res, next) => {

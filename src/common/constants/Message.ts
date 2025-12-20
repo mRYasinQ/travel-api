@@ -1,11 +1,11 @@
 const CommonMessage = Object.freeze({
-  USER_INACTIVE: 'User inactive.',
-  AUTHENTICATION_REQUIRED: 'Access denied. Authentication is required.',
-  ACCESS_DENIED: 'You do not have permission to perform this action.',
-  INVALID_FILE_TYPE: 'Invalid file type.',
-  INVALID_FILE_FIELD: 'Invalid field.',
-  PAYLOAD_EMPTY: 'No data provided for update.',
-  NO_CHANGE_REQUIRED: 'No changes detected.',
+  USER_INACTIVE: 'کاربر غیرفعال می‌باشد.',
+  AUTHENTICATION_REQUIRED: 'ابتدا وارد حساب کاربری خود شوید.',
+  ACCESS_DENIED: 'دسترسی شما مجاز نمی‌باشد.',
+  INVALID_FILE_TYPE: 'فرمت فایل ارسالی معتبر نمی‌باشد.',
+  INVALID_FILE_FIELD: 'نام فیلد ارسالی برای فایل نامعتبر است.',
+  PAYLOAD_EMPTY: 'دیتایی برای بروزرسانی وجود ندارد.',
+  NO_CHANGE_REQUIRED: 'تغییری انجام نشد.',
 });
 
 export default CommonMessage;

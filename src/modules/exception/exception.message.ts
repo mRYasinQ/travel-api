@@ -1,10 +1,10 @@
 const ExceptionMessage = Object.freeze({
-  NOT_FOUND: 'Cannot :method :route',
-  SERVICE_UNAVAILABLE: 'Request timeout.',
-  INTERNAL_SERVER: 'Internal Server Error.',
-  FILE_LARGE: 'File is large.',
-  UNEXPECTED_FILE: 'Too many files or invalid field.',
-  FILE_UPLOAD_FAILED: 'File upload failed. Please try again.',
+  NOT_FOUND: 'مسیر وجود ندارد.',
+  SERVICE_UNAVAILABLE: 'سرویس در دسترس نیست، لطفا دقایقی دیگر تلاش کنید.',
+  INTERNAL_SERVER: 'مشکلی پیش آمد، لطفا دوباره تلاش کنید.',
+  FILE_LARGE: 'حجم فایل ارسالی بیش از حد مجاز است.',
+  UNEXPECTED_FILE: 'تعداد فایل‌های ارسالی نامعتبر یا فایل غیرمنتظره است.',
+  FILE_UPLOAD_FAILED: 'مشکلی در بارگذاری فایل وجود داشت، لطفا دوباره تلاش کنید.',
 });
 
 export default ExceptionMessage;

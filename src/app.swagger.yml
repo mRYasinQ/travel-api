@@ -23,13 +23,13 @@ components:
         total:
           type: number
           example: 32
-  
+
     Permission:
       type: object
       properties:
         label:
           type: string
-          example: Create Role
+          example: ایجاد نقش
         value:
           type: string
           example: CREATE_ROLE
@@ -46,7 +46,7 @@ components:
                 example: 401
               error:
                 type: string
-                example: Access denied. Authentication is required.
+                example: ابتدا وارد حساب کاربری خود شوید.
 
     ForbiddenResponse:
       description: Forbidden.
@@ -60,7 +60,7 @@ components:
                 example: 403
               error:
                 type: string
-                example: You do not have permission to perform this action.
+                example: دسترسی شما مجاز نمی‌باشد.
 
   parameters:
     PaginationPage:
@@ -71,7 +71,7 @@ components:
       schema:
         type: number
         example: 1
-    
+
     PaginationLimit:
       name: limit
       in: query
@@ -90,8 +90,8 @@ components:
         type: array
         items:
           type: string
-        style: form 
-        explode: true 
-        example: 
+        style: form
+        explode: true
+        example:
           - -created_at
           - id
