@@ -1,4 +1,4 @@
-import permissionMapper from '../../common/utils/permissionMapper';
+import { permissionMapper } from '../../common/utils/permission';
 
 import roleEntity from './role.entity';
 
