@@ -1,12 +1,14 @@
 import type { StringValue } from 'ms';
 import type { IResult } from 'ua-parser-js';
 
+import type { Permission } from '../common/constants/Permissions';
+
 import roleEntity from '../modules/role/role.entity';
 import sessionEntity from '../modules/session/session.entity';
 import userEntity from '../modules/user/user.entity';
 
 type Session = Pick<typeof sessionEntity.$inferSelect, 'id' | 'token'>;
-type Role = Omit<typeof roleEntity.$inferSelect, 'createdAt' | 'updatedAt'>;
+type Role = Omit<typeof roleEntity.$inferSelect, 'permissions' | 'createdAt' | 'updatedAt'>;
 type User = Omit<typeof userEntity.$inferSelect, 'password'> & { activeSession: Session; role: Nullable<Role> };
 
 declare global {
@@ -50,6 +52,7 @@ declare global {
       validatedParams: unknown;
 
       user?: User;
+      permissions: Permission[];
       userAgent?: IResult;
     }
   }

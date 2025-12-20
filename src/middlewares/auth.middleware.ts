@@ -37,7 +37,14 @@ const checkAuth = (isOptional: boolean = false): RequestHandler => {
       });
       if (!session) throw new AppError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
 
-      const { id, token, browser, os, expireAt, user } = session;
+      const {
+        id,
+        token,
+        browser,
+        os,
+        expireAt,
+        user: { role, ...user },
+      } = session;
 
       const browserName = req.userAgent?.browser.name;
       const osName = req.userAgent?.os.name;
@@ -47,11 +54,15 @@ const checkAuth = (isOptional: boolean = false): RequestHandler => {
 
       if (expireAt < new Date()) throw new AppError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
 
-      req.user = { ...user, activeSession: { id, token } };
+      req.user = { ...user, role: role ? { id: role.id, name: role.name } : null, activeSession: { id, token } };
+      req.permissions = role?.permissions ?? DEFAULT_PERMISSIONS;
 
       return next();
     } catch (error) {
-      if (isOptional && error instanceof AppError) return next();
+      if (isOptional && error instanceof AppError) {
+        req.permissions = DEFAULT_PERMISSIONS;
+        return next();
+      }
       return next(error);
     }
   };
@@ -60,7 +71,7 @@ const checkAuth = (isOptional: boolean = false): RequestHandler => {
 const checkPermissions = (...permissions: Permission[]): RequestHandler => {
   return async (req, _res, next) => {
     try {
-      const userPermissions = req.user?.role?.permissions ?? DEFAULT_PERMISSIONS;
+      const userPermissions = req.permissions;
 
       const hasAllPermissions = permissions.every((permission) => userPermissions.includes(permission));
       if (!hasAllPermissions) throw new AppError(CommonMessage.ACCESS_DENIED, 'FORBIDDEN');
