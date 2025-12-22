@@ -4,7 +4,10 @@ import filterQuerySchema from '../../common/validations/filter';
 import paginationQuerySchema from '../../common/validations/pagination';
 
 const baseActivitySchema = z.object({
-  name: z.string().min(3).max(200),
+  name: z
+    .string('نام باید رشته باشد.')
+    .min(3, 'نام باید حداقل ۳ کارکتر باشد.')
+    .max(200, 'نام می‌تواند حداکثر ۲۰۰ کارکتر باشد.'),
 });
 
 const createActivitySchema = baseActivitySchema;
@@ -12,7 +15,10 @@ const createActivitySchema = baseActivitySchema;
 const updateActivitySchema = baseActivitySchema.partial();
 
 const activityParamSchema = z.object({
-  id: z.coerce.number().int().positive(),
+  id: z.coerce
+    .number('شناسه فعالیت باید عددی باشد.')
+    .int('شناسه فعالیت باید عددی باشد.')
+    .positive('شناسه فعالیت باید عددی بزرگتر از صفر باشد.'),
 });
 
 const activitiesQuerySchema = filterQuerySchema.extend(paginationQuerySchema.shape);

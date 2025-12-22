@@ -1,10 +1,10 @@
 const ActivityMessage = Object.freeze({
-  ACTIVITY_RETRIEVED: 'Activity retrieved successfully.',
-  ACTIVITY_CREATED: 'Activity created successfully.',
-  ACTIVITY_UPDATED: 'Activity updated successfully.',
-  ACTIVITY_DELETED: 'Activity deleted successfully.',
-  IMAGE_REQUIRED: 'Activity image file is required.',
-  NOT_FOUND: 'Activity not found.',
+  ACTIVITY_RETRIEVED: 'فعالیت‌ها با موفقیت دریافت شدند.',
+  ACTIVITY_CREATED: 'فعالیت ایجاد شد.',
+  ACTIVITY_UPDATED: 'فعالیت بروزرسانی شد.',
+  ACTIVITY_DELETED: 'فعالیت حذف شد.',
+  IMAGE_REQUIRED: 'برای ایجاد فعالیت باید یک تصویر انتخاب کنید.',
+  NOT_FOUND: 'فعالیت یافت نشد.',
 });
 
 export default ActivityMessage;

@@ -66,7 +66,7 @@ components:
             $ref: '#/components/schemas/Role'
         message:
           type: string
-          example: Roles retrieved successfully.
+          example: نقش‌ها با موفقیت دریافت شدند.
 
     RoleResponse:
       type: object
@@ -78,7 +78,7 @@ components:
           $ref: '#/components/schemas/Role'
         message:
           type: string
-          example: Role retrieved successfully.
+          example: نقش با موفقیت دریافت شد.
 
     PermissionsResponse:
       type: object
@@ -92,7 +92,7 @@ components:
             $ref: '#/components/schemas/Permission'
         message:
           type: string
-          example: Permissions retrieved successfully.
+          example: دسترسی‌ها با موفقیت دریافت شدند.
 
     CreateRoleResponse:
       type: object
@@ -102,7 +102,7 @@ components:
           example: 201
         message:
           type: string
-          example: Role created successfully.
+          example: نقش ایجاد شد.
 
     UpdateRoleResponse:
       type: object
@@ -112,7 +112,7 @@ components:
           example: 200
         message:
           type: string
-          example: Role updated successfully.
+          example: نقش بروزرسانی شد.
 
     DeleteRoleResponse:
       type: object
@@ -122,7 +122,7 @@ components:
           example: 200
         message:
           type: string
-          example: Role deleted successfully.
+          example: نقش حذف شد.
 
     NotFoundRoleResponse:
       description: Not Found.
@@ -136,7 +136,7 @@ components:
                 example: 404
               error:
                 type: string
-                example: Role not found.
+                example: نقش یافت نشد.
 
 paths:
   /role:
@@ -192,7 +192,7 @@ paths:
                     example: 400
                   error:
                     type: string
-                    example: Invalid name or permissions.
+                    example: نام باید رشته باشد.
         401:
           $ref: '#/components/schemas/UnauthorizedResponse'
         403:
@@ -209,7 +209,7 @@ paths:
                     example: 409
                   error:
                     type: string
-                    example: Role with this name already exists.
+                    example: نقشی با این نام وجود دارد.
 
   /role/permissions:
     get:
@@ -298,7 +298,7 @@ paths:
                     example: 400
                   error:
                     type: string
-                    example: Invalid name or permissions.
+                    example: نام باید رشته باشد.
         401:
           $ref: '#/components/schemas/UnauthorizedResponse'
         403:
@@ -322,12 +322,12 @@ paths:
                   summary: Role already exists.
                   value:
                     status_code: 409
-                    error: Role with this name already exists.
+                    error: نقشی با این نام وجود دارد.
                 OwnRoleConflict:
                   summary: Cannot modify own role.
                   value:
                     status_code: 409
-                    error: You cannot update the permissions of the role that is currently assigned to you.
+                    error: شما نمی‌توانید نقشی که به خودتان تخصیص داده شده را ویرایش کنید.
 
     delete:
       summary: Delete a role.
@@ -367,4 +367,4 @@ paths:
                     example: 409
                   error:
                     type: string
-                    example: You cannot delete the role that is currently assigned to you.
+                    example: شما نمی‌توانید نقشی که به خودتان تخصیص داده شده را حذف کنید.

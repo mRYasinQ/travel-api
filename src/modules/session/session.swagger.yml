@@ -45,7 +45,7 @@ components:
             $ref: '#/components/schemas/Session'
         message:
           type: string
-          example: Sessions retrieved successfully.
+          example: نشست‌ها با موفقیت دریافت شدند.
 
     SessionResponse:
       type: object
@@ -57,7 +57,7 @@ components:
           $ref: '#/components/schemas/Session'
         message:
           type: string
-          example: Session retrieved successfully.
+          example: نشست با موفقیت دریافت شد.
 
     DeleteSessionResponse:
       type: object
@@ -67,7 +67,7 @@ components:
           example: 200
         message:
           type: string
-          example: Session deleted successfully.
+          example: نشست حذف شد.
 
     ClearSessionResponse:
       type: object
@@ -77,7 +77,21 @@ components:
           example: 200
         message:
           type: string
-          example: All sessions cleared successfully.
+          example: تمام نشست‌ها حذف شدند.
+
+    NotFoundSessionResponse:
+      description: Not Found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status_code:
+                type: number
+                example: 404
+              error:
+                type: string
+                example: نشست یافت نشد.
 
 paths:
   /session:
@@ -130,7 +144,7 @@ paths:
                     example: 400
                   error:
                     type: string
-                    example: Invalid request.
+                    example: فیلد پاک کردن نشست فعال باید یک boolean باشد.
         401:
           $ref: '#/components/schemas/UnauthorizedResponse'
 
@@ -158,18 +172,7 @@ paths:
         401:
           $ref: '#/components/schemas/UnauthorizedResponse'
         404:
-          description: Not Found.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status_code:
-                    type: number
-                    example: 404
-                  error:
-                    type: string
-                    example: Session not found.
+          $ref: '#/components/schemas/NotFoundSessionResponse'
 
     delete:
       summary: Delete a session by id.
@@ -194,18 +197,7 @@ paths:
         401:
           $ref: '#/components/schemas/UnauthorizedResponse'
         404:
-          description: Not Found.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status_code:
-                    type: number
-                    example: 404
-                  error:
-                    type: string
-                    example: Session not found.
+          $ref: '#/components/schemas/NotFoundSessionResponse'
         409:
           description: Conflict.
           content:
@@ -218,4 +210,4 @@ paths:
                     example: 409
                   error:
                     type: string
-                    example: Cannot delete active session.
+                    example: امکان حذف نشست فعال وجود ندارد.
