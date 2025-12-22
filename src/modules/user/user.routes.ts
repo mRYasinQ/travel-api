@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { checkAuth, checkPermissions } from '../../middlewares/auth.middleware';
-import { validationBody, validationParams } from '../../middlewares/validation.middleware';
+import { validationBody, validationParams, validationQuery } from '../../middlewares/validation.middleware';
 
 import {
   createUserHandler,
@@ -19,30 +19,55 @@ import {
   updateUserSchema,
   userParamSchema,
   userParamWithUsernameSchema,
+  usersQuerySchema,
 } from './user.schema';
 
 const userRouter = Router();
 
-userRouter.use(checkAuth(true));
+const requireAuth = checkAuth();
+const optionalAuth = checkAuth(true);
 
-userRouter.get('/', getUsersHandler);
-userRouter.get('/:id', validationParams(userParamSchema), getUserHandler);
-userRouter.get('/by-username/:username', validationParams(userParamWithUsernameSchema), getUserByUsernameHandler);
+userRouter.get('/me', requireAuth, getMeHandler);
+userRouter.patch(
+  '/me',
+  requireAuth,
+  checkPermissions('UPDATE_PROFILE'),
+  validationBody(updateMeSchema),
+  updateMeHandler,
+);
 
-userRouter.use(checkAuth());
-
-userRouter.get('/me', getMeHandler);
-userRouter.patch('/me', checkPermissions('UPDATE_PROFILE'), validationBody(updateMeSchema), updateMeHandler);
-
-userRouter.post('/', checkPermissions('CREATE_USER', 'SHOW_ROLE'), validationBody(createUserSchema), createUserHandler);
+userRouter.post(
+  '/',
+  requireAuth,
+  checkPermissions('CREATE_USER', 'SHOW_ROLE'),
+  validationBody(createUserSchema),
+  createUserHandler,
+);
 
 userRouter.patch(
   '/:id',
+  requireAuth,
   checkPermissions('UPDATE_USER', 'SHOW_ROLE', 'UPDATE_ROLE'),
   validationParams(userParamSchema),
   validationBody(updateUserSchema),
   updateUserHandler,
 );
-userRouter.delete('/:id', checkPermissions('DELETE_USER'), validationParams(userParamSchema), deleteUserHandler);
+userRouter.delete(
+  '/:id',
+  requireAuth,
+  checkPermissions('DELETE_USER'),
+  validationParams(userParamSchema),
+  deleteUserHandler,
+);
+
+userRouter.get('/', optionalAuth, validationQuery(usersQuerySchema), getUsersHandler);
+
+userRouter.get('/:id', optionalAuth, validationParams(userParamSchema), getUserHandler);
+userRouter.get(
+  '/by-username/:username',
+  optionalAuth,
+  validationParams(userParamWithUsernameSchema),
+  getUserByUsernameHandler,
+);
 
 export default userRouter;

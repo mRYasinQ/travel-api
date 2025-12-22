@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import filterQuerySchema from '../../common/validations/filter';
+import paginationQuerySchema from '../../common/validations/pagination';
 import { emailSchema, passwordSchema, usernameSchema } from '../../common/validations/user';
 
 const baseUserSchema = z.object({
@@ -19,7 +21,7 @@ const baseUserSchema = z.object({
   username: usernameSchema,
   password: passwordSchema,
   role_id: z.coerce
-    .number()
+    .number('نقش باید عددی باشد.')
     .int('نقش باید عددی باشد.')
     .positive('نقش باید عددی بزرگتر از صفر باشد.')
     .nullable()
@@ -37,18 +39,28 @@ const updateMeSchema = baseUserSchema
   .partial();
 
 const userParamSchema = z.object({
-  id: z.coerce.number().int('شناسه کاربر باید عددی باشد.').positive('شناسه کاربر باید عددی بزرگتر از صفر باشد.'),
+  id: z.coerce
+    .number('شناسه کاربر باید عددی باشد.')
+    .int('شناسه کاربر باید عددی باشد.')
+    .positive('شناسه کاربر باید عددی بزرگتر از صفر باشد.'),
 });
 
 const userParamWithUsernameSchema = z.object({
   username: usernameSchema,
 });
 
+const usersQuerySchema = filterQuerySchema.extend(
+  paginationQuerySchema.extend({
+    search: z.string('جستجو باید یک رشته باشد.').optional(),
+  }).shape,
+);
+
 type CreateUser = z.infer<typeof createUserSchema>;
 type UpdateUser = z.infer<typeof updateUserSchema>;
 type UpdateMe = z.infer<typeof updateMeSchema>;
 type UserParam = z.infer<typeof userParamSchema>;
 type UserParamWithUsername = z.infer<typeof userParamWithUsernameSchema>;
+type UsersQuery = z.infer<typeof usersQuerySchema>;
 
 export {
   createUserSchema,
@@ -56,9 +68,11 @@ export {
   updateMeSchema,
   userParamSchema,
   userParamWithUsernameSchema,
+  usersQuerySchema,
   CreateUser,
   UpdateUser,
   UpdateMe,
   UserParam,
   UserParamWithUsername,
+  UsersQuery,
 };

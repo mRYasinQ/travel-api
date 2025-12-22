@@ -5,10 +5,10 @@ import createResponse from '../../common/helpers/createResponse';
 import AppError from '../../common/utils/AppError';
 import { hasPermissions } from '../../common/utils/permission';
 
-import { toUserResponse } from './user.mapper';
+import { toUserResponse, toUsersResponse } from './user.mapper';
 import UserMessage from './user.message';
-import type { CreateUser, UpdateMe, UpdateUser, UserParam, UserParamWithUsername } from './user.schema';
-import { createUser, deleteUser, getUser, getUserByUsername, updateUser } from './user.service';
+import type { CreateUser, UpdateMe, UpdateUser, UserParam, UserParamWithUsername, UsersQuery } from './user.schema';
+import { createUser, deleteUser, getUser, getUserByUsername, getUsers, updateUser } from './user.service';
 
 const getMeHandler: RequestHandler = async (req, res, next) => {
   try {
@@ -39,8 +39,18 @@ const updateMeHandler: RequestHandler = async (req, res, next) => {
   }
 };
 
-const getUsersHandler: RequestHandler = async (_req, _res, next) => {
+const getUsersHandler: RequestHandler = async (req, res, next) => {
   try {
+    const query = req.validatedQuery as UsersQuery;
+    const permissions = req.permissions;
+
+    const hasShowUserPermission = hasPermissions(permissions, 'SHOW_USER');
+
+    const { data, pagination } = await getUsers(query, hasShowUserPermission);
+
+    return createResponse(res, 'OK', UserMessage.USERS_RETRIEVED, toUsersResponse(data, hasShowUserPermission), false, {
+      pagination,
+    });
   } catch (error) {
     return next(error);
   }

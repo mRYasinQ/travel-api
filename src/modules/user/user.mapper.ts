@@ -16,10 +16,12 @@ const toUserResponse = (
     email: hasPermission ? email : undefined,
     username,
     role_id: roleId,
-    role: {
-      ...role,
-      permissions: hasPermission ? role?.permissions : undefined,
-    },
+    role: role
+      ? {
+          ...role,
+          permissions: hasPermission ? role?.permissions : undefined,
+        }
+      : undefined,
     is_active: isActive,
     is_email_verified: hasPermission ? isEmailVerified : undefined,
     joined_at: joinedAt,
@@ -27,4 +29,8 @@ const toUserResponse = (
   };
 };
 
-export { toUserResponse };
+const toUsersResponse = (users: UserData[], hasPermission: boolean) => {
+  return users.map((user) => toUserResponse(user, hasPermission));
+};
+
+export { toUserResponse, toUsersResponse };

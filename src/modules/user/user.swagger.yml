@@ -29,7 +29,7 @@ components:
           example: 1
         role:
           type: object
-          nullabe: true
+          nullable: true
           properties:
             id:
               type: number
@@ -77,7 +77,7 @@ components:
           example: 1
         role:
           type: object
-          nullabe: true
+          nullable: true
           properties:
             id:
               type: number
@@ -122,7 +122,7 @@ components:
           example: password
         role_id:
           type: number
-          nullabe: true
+          nullable: true
           example: 1
         is_active:
           type: boolean
@@ -162,7 +162,7 @@ components:
           example: password
         role_id:
           type: number
-          nullabe: true
+          nullable: true
           example: 1
         is_active:
           type: boolean
@@ -225,7 +225,11 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/User'
+            oneOf:
+              - $ref: '#/components/schemas/User'
+              - $ref: '#/components/schemas/PublicUser'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
         message:
           type: string
           example: کاربران با موفقیت دریافت شدند.
@@ -235,7 +239,18 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/UserResponse'
+            type: object
+            properties:
+              status_code:
+                type: number
+                example: 200
+              data:
+                oneOf:
+                  - $ref: '#/components/schemas/User'
+                  - $ref: '#/components/schemas/PublicUser'
+              message:
+                type: string
+                example: کاربر با موفقیت دریافت شد.
           examples:
             WithShowUser:
               summary: With "SHOW_USER" permission.
@@ -409,6 +424,13 @@ paths:
         - $ref: '#/components/parameters/PaginationPage'
         - $ref: '#/components/parameters/PaginationLimit'
         - $ref: '#/components/parameters/OrderBy'
+        - name: search
+          in: query
+          required: false
+          description: Search across first name, last name, username, and email (if permitted).
+          schema:
+            type: string
+            example: yasin
       responses:
         200:
           description: Success.
@@ -438,6 +460,7 @@ paths:
                         },
                       ]
                     message: کاربران با موفقیت دریافت شدند.
+                    pagination: {page: 1, pages: 2, next_page: 2, prev_page: null, limit: 20, total: 32 }
                 WithoutShowUser:
                   summary: Without "SHOW_USER" permission.
                   value:
@@ -457,6 +480,7 @@ paths:
                         },
                       ]
                     message: کاربران با موفقیت دریافت شدند.
+                    pagination: {page: 1, pages: 2, next_page: 2, prev_page: null, limit: 20, total: 32 }
 
     post:
       summary: Create a user.

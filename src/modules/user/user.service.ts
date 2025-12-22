@@ -1,18 +1,29 @@
-import { eq } from 'drizzle-orm';
+import { and, count, eq, getTableColumns, like, or, SQL } from 'drizzle-orm';
 
 import db from '../../configs/db.config';
 
 import CommonMessage from '../../common/constants/Message';
 import { hashPassword } from '../../common/helpers/password';
 import AppError from '../../common/utils/AppError';
+import { getOrderByConfig } from '../../common/utils/filter';
+import { createPaginationService, withPagination } from '../../common/utils/pagination';
 
+import roleEntity from '../role/role.entity';
 import RoleMessage from '../role/role.message';
 import { checkRoleExist } from '../role/role.service';
 import sessionEntity from '../session/session.entity';
 
+import { PUBLIC_ORDER_FIELDS, SENSITIVE_ORDER_FIELDS } from './user.constants';
 import userEntity from './user.entity';
 import UserMessage from './user.message';
-import type { CreateUser, UpdateUser } from './user.schema';
+import type { CreateUser, UpdateUser, UsersQuery } from './user.schema';
+
+const getUserOrderMap = (hasPermission: boolean) => {
+  return {
+    ...PUBLIC_ORDER_FIELDS,
+    ...(hasPermission ? SENSITIVE_ORDER_FIELDS : {}),
+  };
+};
 
 const checkUserExistByEmail = async (email: string) => {
   const user = await db.query.user.findFirst({ where: eq(userEntity.email, email), columns: { id: true } });
@@ -22,6 +33,55 @@ const checkUserExistByEmail = async (email: string) => {
 const checkUserExistByUsername = async (username: string) => {
   const user = await db.query.user.findFirst({ where: eq(userEntity.username, username), columns: { id: true } });
   return user ? true : false;
+};
+
+const getUsers = async (filterQuery: UsersQuery, hasPermission: boolean) => {
+  const { page, limit, order_by, search } = filterQuery;
+
+  const filters: SQL[] = [];
+  const orderExpressions = getOrderByConfig(order_by, getUserOrderMap(hasPermission));
+
+  if (search) {
+    const searchConditions: SQL[] = [
+      like(userEntity.firstName, `%${search}%`),
+      like(userEntity.lastName, `%${search}%`),
+      like(userEntity.username, `%${search}%`),
+    ];
+
+    if (hasPermission) searchConditions.push(like(userEntity.email, `%${search}%`));
+
+    filters.push(or(...searchConditions)!);
+  }
+
+  const whereExpressions = filters.length > 0 ? and(...filters) : undefined;
+
+  const query = db
+    .select({
+      ...getTableColumns(userEntity),
+      role: {
+        id: roleEntity.id,
+        name: roleEntity.name,
+        permissions: roleEntity.permissions,
+      },
+    })
+    .from(userEntity)
+    .leftJoin(roleEntity, eq(userEntity.roleId, roleEntity.id))
+    .where(whereExpressions)
+    .orderBy(...orderExpressions)
+    .$withCache();
+  const dynamicQuery = query.$dynamic();
+
+  const countQuery = db.select({ count: count() }).from(userEntity).where(whereExpressions).$withCache();
+  const dataQuery = withPagination(dynamicQuery, page, limit);
+
+  const [[{ count: total }], data] = await Promise.all([countQuery, dataQuery]);
+
+  const pagination = createPaginationService(page, limit, total);
+
+  return {
+    data,
+    pagination,
+  };
 };
 
 const getUser = async (id: number) => {
@@ -135,4 +195,4 @@ const deleteUser = async (id: number) => {
   return;
 };
 
-export { getUser, getUserByUsername, createUser, updateUser, deleteUser };
+export { getUsers, getUser, getUserByUsername, createUser, updateUser, deleteUser };
