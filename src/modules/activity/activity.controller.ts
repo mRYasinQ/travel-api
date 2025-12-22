@@ -12,12 +12,12 @@ import type { UpdateActivityPayload } from './activity.types';
 
 const getActivitiesHandler: RequestHandler = async (req, res, next) => {
   try {
-    const { page, limit, order_by } = req.validatedQuery as ActivitiesQuery;
+    const query = req.validatedQuery as ActivitiesQuery;
 
-    const { data, pagiantion } = await getActivities({ page, limit, order_by });
+    const { data, pagination } = await getActivities(query);
 
     return createResponse(res, 'OK', ActivityMessage.ACTIVITY_RETRIEVED, toActivitiesResponse(data), false, {
-      pagiantion,
+      pagination,
     });
   } catch (error) {
     return next(error);

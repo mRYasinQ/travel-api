@@ -15,7 +15,9 @@ import ActivityMessage from './activity.message';
 import type { ActivitiesQuery } from './activity.schema';
 import type { UpdateActivityPayload } from './activity.types';
 
-const getActivities = async ({ page, limit, order_by }: ActivitiesQuery) => {
+const getActivities = async (filterQuery: ActivitiesQuery) => {
+  const { page, limit, order_by } = filterQuery;
+
   const orderExpressions = getOrderByConfig(order_by, ACTIVITY_ORDER_MAP);
 
   const query = db
@@ -30,11 +32,11 @@ const getActivities = async ({ page, limit, order_by }: ActivitiesQuery) => {
 
   const [[{ count: total }], data] = await Promise.all([countQuery, dataQuery]);
 
-  const pagiantion = createPaginationService(page, limit, total);
+  const pagination = createPaginationService(page, limit, total);
 
   return {
     data,
-    pagiantion,
+    pagination,
   };
 };
 
