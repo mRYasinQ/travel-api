@@ -15,12 +15,12 @@ import type { CreateRole, RolesQuery, UpdateRole } from './role.schema';
 
 const checkRoleExist = async (id: number) => {
   const role = await db.query.role.findFirst({ where: eq(roleEntity.id, id), columns: { id: true } });
-  return role ? true : false;
+  return Boolean(role);
 };
 
 const checkExistRoleByName = async (name: string) => {
   const role = await db.query.role.findFirst({ where: eq(roleEntity.name, name), columns: { id: true } });
-  return role ? true : false;
+  return Boolean(role);
 };
 
 const getRoles = async ({ order_by }: RolesQuery) => {

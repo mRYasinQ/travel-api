@@ -27,7 +27,7 @@ const getUserOrderMap = (hasPermission: boolean) => {
 
 const checkUserExistByEmail = async (email: string) => {
   const user = await db.query.user.findFirst({ where: eq(userEntity.email, email), columns: { id: true } });
-  return user ? true : false;
+  return Boolean(user);
 };
 
 const checkUserExistByUsername = async (username: string) => {
