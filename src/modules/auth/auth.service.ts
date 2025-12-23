@@ -202,7 +202,9 @@ const verifyEmailSendOtp = async (email: string) => {
     where: eq(userEntity.email, email),
     columns: { isEmailVerified: true },
   });
-  if (!user || (user && user.isEmailVerified)) throw new AppError(AuthMessage.EMAIL_INCORRECT, 'BAD_REQUEST');
+  if (!user) throw new AppError(AuthMessage.EMAIL_INCORRECT, 'BAD_REQUEST');
+
+  if (user.isEmailVerified) throw new AppError(AuthMessage.EMAIL_VERIFIED, 'BAD_REQUEST');
 
   const key: VerifyEmailOtpKey = `verify:otp:${email}`;
   const [otpData, ttl] = await execAndExtract<[string, number]>(redisClient.multi().get(key).ttl(key));

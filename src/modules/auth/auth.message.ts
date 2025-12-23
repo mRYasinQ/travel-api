@@ -10,6 +10,7 @@ const AuthMessage = Object.freeze({
   EMAIL_ALREADY_ASSOCIATED: 'حسابی با این ایمیل ثبت شده است.',
   INVALID_OTP: 'کد تایید معتبر نمی‌باشد.',
   EMAIL_INCORRECT: 'ایمیل نادرست است.',
+  EMAIL_VERIFIED: 'ایمیل تایید شده است.',
   CREDENTIALS_INCORRECT: 'ایمیل یا گذرواژه نادرست است.',
   WAIT_BEFORE_NEW_OTP: 'لطفا :time ثانیه دیگر دوباره تلاش کنید.',
 });

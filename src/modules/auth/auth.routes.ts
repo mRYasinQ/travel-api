@@ -15,7 +15,14 @@ import {
   verifyEmailHandler,
   verifyEmailSendOtpHandler,
 } from './auth.controller';
-import { loginSchema, recoverSchema, registerSchema, sendOtpSchema, verifyOtpSchema } from './auth.schema';
+import {
+  loginSchema,
+  recoverSchema,
+  registerSchema,
+  sendOtpSchema,
+  verifyEmailSchema,
+  verifyOtpSchema,
+} from './auth.schema';
 
 const authRouter = Router();
 
@@ -29,8 +36,8 @@ authRouter.post('/recover', validationBody(recoverSchema), recoverHandler);
 authRouter.post('/recover/send-otp', validationBody(sendOtpSchema), recoverSendOtpHandler);
 authRouter.post('/recover/verify-otp', validationBody(verifyOtpSchema), recoverVerifyOtpHandler);
 
-authRouter.post('/verify-email/send-otp', validationBody(sendOtpSchema), verifyEmailSendOtpHandler);
-authRouter.post('/verify-email/verify-otp', validationBody(verifyOtpSchema), verifyEmailHandler);
+authRouter.post('/verify-email/send-otp', checkAuth(), verifyEmailSendOtpHandler);
+authRouter.post('/verify-email/verify-otp', checkAuth(), validationBody(verifyEmailSchema), verifyEmailHandler);
 
 authRouter.delete('/logout', checkAuth(), logoutHandler);
 

@@ -90,6 +90,17 @@ components:
         - email
         - otp
 
+    VerifyEmailOtp:
+      type: object
+      properties:
+        otp:
+          type: string
+          example: '12345'
+          minLength: 5
+          maxLength: 5
+      required:
+        - otp
+
     LoginResponse:
       type: object
       properties:
@@ -190,10 +201,6 @@ components:
         data:
           type: object
           properties:
-            email:
-              type: string
-              format: email
-              example: test@example.com
             is_email_verified:
               type: boolean
               example: true
@@ -475,22 +482,22 @@ paths:
     post:
       summary: Send OTP to email.
       tags: [Authentication]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SendOtp'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/SendOtp'
+      security:
+        - bearerAuth: []
       responses:
         200:
           description: Success.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SendOtpResponse'
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 200
+                  message:
+                    type: string
+                    example: کد تایید ارسال شد.
         400:
           description: Bad Request.
           content:
@@ -504,6 +511,8 @@ paths:
                   error:
                     type: string
                     example: ایمیل نادرست است.
+        401:
+          $ref: '#/components/schemas/UnauthorizedResponse'
         429:
           $ref: '#/components/schemas/ManyRequestResponse'
 
@@ -511,15 +520,17 @@ paths:
     post:
       summary: Verify email.
       tags: [Authentication]
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/VerifyOtp'
+              $ref: '#/components/schemas/VerifyEmailOtp'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/VerifyOtp'
+              $ref: '#/components/schemas/VerifyEmailOtp'
       responses:
         200:
           description: Success.
@@ -540,6 +551,8 @@ paths:
                   error:
                     type: string
                     example: کد تایید معتبر نمی‌باشد.
+        401:
+          $ref: '#/components/schemas/UnauthorizedResponse'
 
   /auth/logout:
     delete:

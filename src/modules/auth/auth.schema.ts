@@ -23,11 +23,14 @@ const sendOtpSchema = baseAuthSchema.pick({ email: true });
 
 const verifyOtpSchema = baseAuthSchema.omit({ password: true });
 
+const verifyEmailSchema = baseAuthSchema.pick({ otp: true });
+
 type Login = z.infer<typeof loginSchema>;
 type Register = z.infer<typeof registerSchema>;
 type Recover = z.infer<typeof recoverSchema>;
 type SendOtp = z.infer<typeof sendOtpSchema>;
 type VerifyOtp = z.infer<typeof verifyOtpSchema>;
+type VerifyEmail = z.infer<typeof verifyEmailSchema>;
 
 export {
   loginSchema,
@@ -35,9 +38,11 @@ export {
   recoverSchema,
   sendOtpSchema,
   verifyOtpSchema,
+  verifyEmailSchema,
   Login,
   Register,
   Recover,
   SendOtp,
   VerifyOtp,
+  VerifyEmail,
 };

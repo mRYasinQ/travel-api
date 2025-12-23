@@ -5,7 +5,7 @@ import createResponse from '../../common/helpers/createResponse';
 import AppError from '../../common/utils/AppError';
 
 import AuthMessage from './auth.message';
-import type { Login, Recover, Register, SendOtp, VerifyOtp } from './auth.schema';
+import type { Login, Recover, Register, SendOtp, VerifyEmail, VerifyOtp } from './auth.schema';
 import {
   loginUser,
   logoutUser,
@@ -108,11 +108,12 @@ const recoverVerifyOtpHandler: RequestHandler = async (req, res, next) => {
 
 const verifyEmailSendOtpHandler: RequestHandler = async (req, res, next) => {
   try {
-    const { email } = req.validatedBody as SendOtp;
+    const email = req.user?.email;
+    if (!email) throw new AppError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
 
     await verifyEmailSendOtp(email);
 
-    return createResponse(res, 'OK', AuthMessage.SENT_OTP, { email });
+    return createResponse(res, 'OK', AuthMessage.SENT_OTP);
   } catch (error) {
     return next(error);
   }
@@ -120,11 +121,14 @@ const verifyEmailSendOtpHandler: RequestHandler = async (req, res, next) => {
 
 const verifyEmailHandler: RequestHandler = async (req, res, next) => {
   try {
-    const { email, otp } = req.validatedBody as VerifyOtp;
+    const { otp } = req.validatedBody as VerifyEmail;
+
+    const email = req.user?.email;
+    if (!email) throw new AppError(CommonMessage.AUTHENTICATION_REQUIRED, 'UNAUTHORIZED');
 
     await verifyEmail(email, otp);
 
-    return createResponse(res, 'OK', AuthMessage.EMAIL_VERIFIED_SUCCESS, { email, is_email_verified: true });
+    return createResponse(res, 'OK', AuthMessage.EMAIL_VERIFIED_SUCCESS, { is_email_verified: true });
   } catch (error) {
     return next(error);
   }
