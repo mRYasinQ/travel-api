@@ -2,33 +2,26 @@ import { z } from 'zod';
 
 import { emailSchema, passwordSchema } from '../../common/validations/user';
 
-const otpSchema = z.string().min(5).max(5);
+const otpSchema = z
+  .string('کد تایید باید یک رشته باشد.')
+  .min(5, 'کد تایید باید حداقل ۵ کارکتر باشد.')
+  .max(5, 'کد تایید می‌تواند حداکثر ۵ کارکتر باشد.');
 
-const loginSchema = z.object({
+const baseAuthSchema = z.object({
   email: emailSchema,
+  otp: otpSchema,
   password: passwordSchema,
 });
 
-const registerSchema = z.object({
-  email: emailSchema,
-  password: passwordSchema,
-  otp: otpSchema,
-});
+const loginSchema = baseAuthSchema.omit({ otp: true });
 
-const recoverSchema = z.object({
-  email: emailSchema,
-  password: passwordSchema,
-  otp: otpSchema,
-});
+const registerSchema = baseAuthSchema;
 
-const sendOtpSchema = z.object({
-  email: emailSchema,
-});
+const recoverSchema = baseAuthSchema;
 
-const verifyOtpSchema = z.object({
-  email: emailSchema,
-  otp: otpSchema,
-});
+const sendOtpSchema = baseAuthSchema.pick({ email: true });
+
+const verifyOtpSchema = baseAuthSchema.omit({ password: true });
 
 type Login = z.infer<typeof loginSchema>;
 type Register = z.infer<typeof registerSchema>;

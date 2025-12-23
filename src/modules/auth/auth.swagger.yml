@@ -108,7 +108,7 @@ components:
               example: token
         message:
           type: string
-          example: Logged in successfully.
+          example: ورود با موفقیت انجام شد.
 
     RegisterResponse:
       type: object
@@ -125,7 +125,7 @@ components:
               example: test@example.com
         message:
           type: string
-          example: Registered successfully.
+          example: ثبت‌نام با موفقیت انجام شد.
 
     SendOtpResponse:
       type: object
@@ -142,7 +142,7 @@ components:
               example: test@example.com
         message:
           type: string
-          example: Otp sent successfully.
+          example: کد تایید ارسال شد.
 
     RecoverResponse:
       type: object
@@ -159,7 +159,7 @@ components:
               example: test@example.com
         message:
           type: string
-          example: Otp sent successfully.
+          example: کد تایید ارسال شد.
 
     VerifyOtpResponse:
       type: object
@@ -179,7 +179,21 @@ components:
               example: true
         message:
           type: string
-          example: Otp verified successfully.
+          example: کد تایید شد.
+
+    ManyRequestResponse:
+      description: Too Many Requests.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status_code:
+                type: number
+                example: 429
+              error:
+                type: string
+                example: لطفا ۶۰ ثانیه دیگر دوباره تلاش کنید.
 
 paths:
   /auth/login:
@@ -214,7 +228,7 @@ paths:
                     example: 400
                   error:
                     type: string
-                    example: Invalid email or password.
+                    example: ایمیل یا گذرواژه نادرست است.
         403:
           description: Forbidden.
           content:
@@ -227,7 +241,7 @@ paths:
                     example: 403
                   error:
                     type: string
-                    example: User inactive.
+                    example: کاربر غیرفعال می‌باشد.
 
   /auth/register:
     post:
@@ -261,7 +275,7 @@ paths:
                     example: 400
                   error:
                     type: string
-                    example: Invalid email.
+                    example: ایمیل نادرست است.
 
   /auth/register/send-otp:
     post:
@@ -295,20 +309,9 @@ paths:
                     example: 400
                   error:
                     type: string
-                    example: Invalid email.
+                    example: ایمیل نادرست است.
         429:
-          description: Too Many Requests.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status_code:
-                    type: number
-                    example: 429
-                  error:
-                    type: string
-                    example: You must wait 60 seconds before requesting a new OTP.
+          $ref: '#/components/schemas/ManyRequestResponse'
 
   /auth/register/verify-otp:
     post:
@@ -342,7 +345,7 @@ paths:
                     example: 400
                   error:
                     type: string
-                    example: Invalid Otp.
+                    example: کد تایید معتبر نمی‌باشد.
 
   /auth/recover:
     post:
@@ -376,7 +379,7 @@ paths:
                     example: 400
                   error:
                     type: string
-                    example: Invalid email.
+                    example: ایمیل نادرست است.
 
   /auth/recover/send-otp:
     post:
@@ -410,20 +413,9 @@ paths:
                     example: 400
                   error:
                     type: string
-                    example: Invalid email.
+                    example: ایمیل نادرست است.
         429:
-          description: Too Many Requests.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status_code:
-                    type: number
-                    example: 429
-                  error:
-                    type: string
-                    example: You must wait 60 seconds before requesting a new OTP.
+          $ref: '#/components/schemas/ManyRequestResponse'
 
   /auth/recover/verify-otp:
     post:
@@ -457,7 +449,7 @@ paths:
                     example: 400
                   error:
                     type: string
-                    example: Invalid Otp.
+                    example: کد تایید معتبر نمی‌باشد.
 
   /auth/logout:
     delete:
@@ -478,6 +470,6 @@ paths:
                     example: 200
                   message:
                     type: string
-                    example: Logged out successfully.
+                    example: خروج از حساب کاربری با موفقیت انجام شد.
         401:
           $ref: '#/components/schemas/UnauthorizedResponse'

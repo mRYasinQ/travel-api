@@ -105,8 +105,8 @@ const registerSendOtp = async (email: string) => {
 
   sendMailSync({
     to: email,
-    subject: 'Code for registration',
-    text: `Your code for registration is ${otp}`,
+    subject: 'کد تایید ثبت‌نام',
+    text: `کد تایید شما برای ثبت‌نام: ${otp}`,
   });
 
   return;
@@ -171,8 +171,8 @@ const recoverSendOtp = async (email: string) => {
 
   sendMailSync({
     to: email,
-    subject: 'Code for recovery',
-    text: `Your code for recovery is ${otp}`,
+    subject: 'کد تایید بازنشانی گذرواژه',
+    text: `کد تایید شما برای بازنشانی گذرواژه: ${otp}`,
   });
 
   return;
