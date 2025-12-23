@@ -1,21 +1,29 @@
 import { z } from 'zod';
 
-const orderByItemSchema = z.string().regex(/^[-]?\w+$/, "Invalid sort format. Use 'field' or '-field'");
+const orderByItemSchema = z
+  .string()
+  .regex(/^[-]?\w+$/, "فرمت مرتب‌سازی نامعتبر است. از 'field' یا 'field-' استفاده کنید.");
 
 const filterQuerySchema = z
   .object({
-    order_by: z.preprocess((value) => {
-      if (Array.isArray(value)) return value;
+    order_by: z.preprocess(
+      (value) => {
+        if (Array.isArray(value)) return value;
 
-      if (typeof value === 'string') {
-        return value
-          .split(',')
-          .map((item) => item.trim())
-          .filter((item) => item.length > 0);
-      }
+        if (typeof value === 'string') {
+          return value
+            .split(',')
+            .map((item) => item.trim())
+            .filter((item) => item.length > 0);
+        }
 
-      return value;
-    }, z.array(orderByItemSchema)),
+        return value;
+      },
+      z.array(
+        orderByItemSchema,
+        'لیست مرتب‌سازی باید به صورت آرایه یا رشته‌ای از کلمات باشد که با ویرگول جدا شده‌اند.',
+      ),
+    ),
   })
   .partial();
 
