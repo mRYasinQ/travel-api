@@ -19,6 +19,7 @@ import AuthMessage from './auth.message';
 
 type RegisterOtpKey = `register:otp:${string}`;
 type RecoverOtpKey = `recover:otp:${string}`;
+type VerifyEmailOtpKey = `verify:otp:${string}`;
 type OtpData = {
   otp: string;
   verified: boolean;
@@ -196,6 +197,45 @@ const recoverVerifyOtp = async (email: string, otp: string) => {
   return;
 };
 
+const verifyEmailSendOtp = async (email: string) => {
+  const user = await db.query.user.findFirst({
+    where: eq(userEntity.email, email),
+    columns: { isEmailVerified: true },
+  });
+  if (!user || (user && user.isEmailVerified)) throw new AppError(AuthMessage.EMAIL_INCORRECT, 'BAD_REQUEST');
+
+  const key: VerifyEmailOtpKey = `verify:otp:${email}`;
+  const [otpData, ttl] = await execAndExtract<[string, number]>(redisClient.multi().get(key).ttl(key));
+  if (otpData && ttl > 0) {
+    throw new AppError(formatMessage(AuthMessage.WAIT_BEFORE_NEW_OTP, { time: ttl }), 'TOO_MANY_REQUESTS');
+  }
+
+  const otp = String(generateOtp());
+  const expiresIn = ms(OTP_EXPIRE);
+
+  await redisClient.set(key, otp, 'PX', expiresIn);
+
+  sendMailSync({
+    to: email,
+    subject: 'کد تایید فعالسازی ایمیل',
+    text: `کد تایید شما برای فعالسازی ایمیل: ${otp}`,
+  });
+
+  return;
+};
+
+const verifyEmail = async (email: string, otp: string) => {
+  const key: VerifyEmailOtpKey = `verify:otp:${email}`;
+  const result = await redisClient.get(key);
+  if (!result || (result && result !== otp)) throw new AppError(AuthMessage.INVALID_OTP, 'BAD_REQUEST');
+
+  await redisClient.del(key);
+
+  await db.update(userEntity).set({ isEmailVerified: true }).where(eq(userEntity.email, email));
+
+  return;
+};
+
 const logoutUser = async (sessionId: number) => {
   await db.delete(sessionEntity).where(eq(sessionEntity.id, sessionId));
   return;
@@ -209,5 +249,7 @@ export {
   recoverUser,
   recoverSendOtp,
   recoverVerifyOtp,
+  verifyEmailSendOtp,
+  verifyEmail,
   logoutUser,
 };

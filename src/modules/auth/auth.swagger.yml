@@ -181,6 +181,26 @@ components:
           type: string
           example: کد تایید شد.
 
+    VerifyEmailResponse:
+      type: object
+      properties:
+        status_code:
+          type: number
+          example: 200
+        data:
+          type: object
+          properties:
+            email:
+              type: string
+              format: email
+              example: test@example.com
+            is_email_verified:
+              type: boolean
+              example: true
+        message:
+          type: string
+          example: ایمیل تایید شد.
+
     ManyRequestResponse:
       description: Too Many Requests.
       content:
@@ -437,6 +457,76 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/VerifyOtpResponse'
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 400
+                  error:
+                    type: string
+                    example: کد تایید معتبر نمی‌باشد.
+
+  /auth/verify-email/send-otp:
+    post:
+      summary: Send OTP to email.
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendOtp'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendOtp'
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendOtpResponse'
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: number
+                    example: 400
+                  error:
+                    type: string
+                    example: ایمیل نادرست است.
+        429:
+          $ref: '#/components/schemas/ManyRequestResponse'
+
+  /auth/verify-email/verify-otp:
+    post:
+      summary: Verify email.
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyOtp'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VerifyOtp'
+      responses:
+        200:
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyEmailResponse'
         400:
           description: Bad Request.
           content:

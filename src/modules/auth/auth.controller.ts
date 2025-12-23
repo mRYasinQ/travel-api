@@ -15,6 +15,8 @@ import {
   registerSendOtp,
   registerUser,
   registerVerifyOtp,
+  verifyEmail,
+  verifyEmailSendOtp,
 } from './auth.service';
 
 const loginHandler: RequestHandler = async (req, res, next) => {
@@ -104,6 +106,30 @@ const recoverVerifyOtpHandler: RequestHandler = async (req, res, next) => {
   }
 };
 
+const verifyEmailSendOtpHandler: RequestHandler = async (req, res, next) => {
+  try {
+    const { email } = req.validatedBody as SendOtp;
+
+    await verifyEmailSendOtp(email);
+
+    return createResponse(res, 'OK', AuthMessage.SENT_OTP, { email });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const verifyEmailHandler: RequestHandler = async (req, res, next) => {
+  try {
+    const { email, otp } = req.validatedBody as VerifyOtp;
+
+    await verifyEmail(email, otp);
+
+    return createResponse(res, 'OK', AuthMessage.EMAIL_VERIFIED_SUCCESS, { email, is_email_verified: true });
+  } catch (error) {
+    return next(error);
+  }
+};
+
 const logoutHandler: RequestHandler = async (req, res, next) => {
   try {
     const activeSessionId = req.user?.activeSession.id;
@@ -125,5 +151,7 @@ export {
   recoverHandler,
   recoverSendOtpHandler,
   recoverVerifyOtpHandler,
+  verifyEmailSendOtpHandler,
+  verifyEmailHandler,
   logoutHandler,
 };

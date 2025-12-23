@@ -12,6 +12,8 @@ import {
   registerHandler,
   registerSendOtpHandler,
   registerVerifyOtpHandler,
+  verifyEmailHandler,
+  verifyEmailSendOtpHandler,
 } from './auth.controller';
 import { loginSchema, recoverSchema, registerSchema, sendOtpSchema, verifyOtpSchema } from './auth.schema';
 
@@ -26,6 +28,9 @@ authRouter.post('/register/verify-otp', validationBody(verifyOtpSchema), registe
 authRouter.post('/recover', validationBody(recoverSchema), recoverHandler);
 authRouter.post('/recover/send-otp', validationBody(sendOtpSchema), recoverSendOtpHandler);
 authRouter.post('/recover/verify-otp', validationBody(verifyOtpSchema), recoverVerifyOtpHandler);
+
+authRouter.post('/verify-email/send-otp', validationBody(sendOtpSchema), verifyEmailSendOtpHandler);
+authRouter.post('/verify-email/verify-otp', validationBody(verifyOtpSchema), verifyEmailHandler);
 
 authRouter.delete('/logout', checkAuth(), logoutHandler);
 
