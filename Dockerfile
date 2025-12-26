@@ -1,10 +1,10 @@
-FROM oven/bun:1.3.3-alpine AS base
+FROM oven/bun:1.3.5-alpine AS base
 
 RUN addgroup app && adduser -S -G app app
 
 FROM base AS deps
 WORKDIR /app
-COPY package*.json bun.lock ./
+COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
 FROM base AS builder
