@@ -3,6 +3,7 @@ import { Router } from 'express';
 import UploadFolders from '../../common/constants/UploadFolders';
 
 import { checkAuth, checkPermissions } from '../../middlewares/auth.middleware';
+import processImage from '../../middlewares/processImage.middleware';
 import uploadFile from '../../middlewares/uploadFile.middleware';
 import { validationBody, validationParams, validationQuery } from '../../middlewares/validation.middleware';
 
@@ -33,31 +34,39 @@ const uploadActivityImage = uploadFile({
 
 const activityRouter = Router();
 
+const requireAuth = checkAuth();
+const optionalAuth = checkAuth(true);
+
 activityRouter.get(
   '/',
+  optionalAuth,
   checkPermissions('SHOW_ACTIVITY'),
   validationQuery(activitiesQuerySchema),
   getActivitiesHandler,
 );
-
-activityRouter.use(checkAuth());
 activityRouter.post(
   '/',
+  requireAuth,
   checkPermissions('CREATE_ACTIVITY'),
   uploadActivityImage,
+  processImage,
   validationBody(createActivitySchema),
   createActivityHandler,
 );
+
 activityRouter.patch(
   '/:id',
+  requireAuth,
   checkPermissions('UPDATE_ACTIVITY'),
   uploadActivityImage,
+  processImage,
   validationParams(activityParamSchema),
   validationBody(updateActivitySchema),
   updateActivityHandler,
 );
 activityRouter.delete(
   '/:id',
+  requireAuth,
   checkPermissions('DELETE_ACTIVITY'),
   validationParams(activityParamSchema),
   deleteActivityHandler,
