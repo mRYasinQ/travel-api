@@ -53,7 +53,7 @@ const getUsers = async (filterQuery: UsersQuery, hasPermission: boolean) => {
     filters.push(or(...searchConditions)!);
   }
 
-  const whereExpressions = filters.length > 0 ? and(...filters) : undefined;
+  const whereClause = filters.length > 0 ? and(...filters) : undefined;
 
   const query = db
     .select({
@@ -66,12 +66,12 @@ const getUsers = async (filterQuery: UsersQuery, hasPermission: boolean) => {
     })
     .from(userEntity)
     .leftJoin(roleEntity, eq(userEntity.roleId, roleEntity.id))
-    .where(whereExpressions)
+    .where(whereClause)
     .orderBy(...orderExpressions)
     .$withCache();
   const dynamicQuery = query.$dynamic();
 
-  const countQuery = db.select({ count: count() }).from(userEntity).where(whereExpressions).$withCache();
+  const countQuery = db.select({ count: count() }).from(userEntity).where(whereClause).$withCache();
   const dataQuery = withPagination(dynamicQuery, page, limit);
 
   const [[{ count: total }], data] = await Promise.all([countQuery, dataQuery]);
