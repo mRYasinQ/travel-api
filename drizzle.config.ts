@@ -2,7 +2,7 @@ import { defineConfig } from 'drizzle-kit';
 
 const drizzleKitConfig = defineConfig({
   dialect: 'mysql',
-  schema: ['./src/modules/**/*.entity.ts', './dist/modules/**/*.entity.js'],
+  schema: ['./src/modules/**/*.entity.ts'],
   out: './drizzle',
   dbCredentials: {
     host: process.env.DB_HOST!,
