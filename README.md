@@ -63,17 +63,17 @@ bun run db:superuser
 NODE_ENV="development" # development | production
 APP_PORT="3000"
 BASE_URL="http://localhost:3000"
-MAX_LIMIT_PAGINATION="" # Number, Example: 20
+MAX_LIMIT_PAGINATION="20" # Number, Example: 20
 
 # Redis.
-REDIS_URL="redis://:your_password@redis:6379"
-REDIS_PASSWORD="your_password"
+REDIS_URL="redis://:YOUR_PASSWORD@redis:6379"
+REDIS_PASSWORD="YOUR_PASSWORD"
 
 # Database.
 DB_HOST="mysql"
 DB_PORT="3306"
 DB_USER="root"
-DB_PASSWORD="your_password"
+DB_PASSWORD="YOUR_PASSWORD"
 DB_NAME="travel_app"
 DB_CONNECTION_LIMIT="10"
 DB_CACHE_QUERY_DEFAULT="30m" # Time.
@@ -83,7 +83,7 @@ MAIL_SECURE="0" # 0: false | 1: true
 MAIL_HOST="smtp4dev"
 MAIL_PORT="5001"
 MAIL_USER="root"
-MAIL_PASSWORD="your_password"
+MAIL_PASSWORD="YOUR_PASSWORD"
 
 # Time, Example: 2m: 2 minute, 1d: 1 day
 TOKEN_EXPIRE="7d"
